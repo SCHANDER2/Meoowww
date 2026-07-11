@@ -3,15 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Lakshay Bana — Creative Freelancer. Turning bold ideas into unforgettable digital experiences through design, code, and imagination." />
-  <meta name="keywords" content="Lakshay Bana, freelancer, portfolio, creative, designer, developer" />
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Lakshay Bana — Creative Freelancer & UI/UX Developer. Designing and building custom, high-end digital experiences, websites, and brand identities." />
+  <meta name="keywords" content="Lakshay Bana, portfolio, portfolio website, personal portfolio, portfolio inspiration, lakshay, professional portfolio, lakshay bana portfolio, creative freelancer, UI/UX designer India" />
   <meta name="author" content="Lakshay Bana" />
-  <title>Lakshay Bana — Creative Freelancer Portfolio</title>
+  <meta name="theme-color" content="#0a0a0b" />
+  <title>Lakshay Bana — Creative Freelancer &amp; UI/UX Developer Portfolio</title>
 
-  <!-- Fonts -->
+  <!-- Performance Optimization: DNS Prefetch & Preconnect -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- Preloads for Above-The-Fold Performance -->
+  <link rel="preload" href="profile_avatar.png" as="image" fetchpriority="high" />
+
+  <!-- Canonical Link -->
+  <link rel="canonical" href="https://meoowww.vercel.app/" />
+
+  <!-- Sitemap Connection -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://meoowww.vercel.app/" />
+  <meta property="og:title" content="Lakshay Bana — Creative Freelancer &amp; UI/UX Developer" />
+  <meta property="og:description" content="Turning bold ideas into unforgettable digital experiences through design, code, and a touch of creative madness. Explore my work." />
+  <meta property="og:image" content="https://meoowww.vercel.app/profile_avatar.png" />
+  <meta property="og:site_name" content="Lakshay Bana Portfolio" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://meoowww.vercel.app/" />
+  <meta name="twitter:title" content="Lakshay Bana — Creative Freelancer &amp; UI/UX Developer" />
+  <meta name="twitter:description" content="Turning bold ideas into unforgettable digital experiences through design, code, and a touch of creative madness. Explore my work." />
+  <meta name="twitter:image" content="https://meoowww.vercel.app/profile_avatar.png" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://meoowww.vercel.app/#website",
+        "url": "https://meoowww.vercel.app/",
+        "name": "Lakshay Bana Portfolio",
+        "description": "Creative Freelancer & UI/UX Developer Portfolio",
+        "publisher": {
+          "@id": "https://meoowww.vercel.app/#person"
+        }
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://meoowww.vercel.app/#profilepage",
+        "url": "https://meoowww.vercel.app/",
+        "name": "Lakshay Bana — Professional Portfolio",
+        "isPartOf": { "@id": "https://meoowww.vercel.app/#website" },
+        "mainEntity": { "@id": "https://meoowww.vercel.app/#person" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://meoowww.vercel.app/#person",
+        "name": "Lakshay Bana",
+        "jobTitle": "Creative Freelancer & UI/UX Developer",
+        "url": "https://meoowww.vercel.app/",
+        "image": "https://meoowww.vercel.app/profile_avatar.png",
+        "description": "Creative freelancer based in India with 3+ years of experience helping startups and businesses through UI/UX design, front-end development, and brand identity.",
+        "sameAs": [
+          "https://github.com/SCHANDER2",
+          "https://linkedin.com/in/lakshaybana",
+          "https://instagram.com/lakshaybana"
+        ],
+        "knowsAbout": [
+          "UI/UX Design",
+          "Web Development",
+          "Brand Identity",
+          "Mobile Design",
+          "Creative Direction",
+          "Motion Design",
+          "GSAP Animations"
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet" />
 
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -20,6 +105,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="no-transition">
+
+  <!-- Video Background -->
+  <div class="video-bg-wrap">
+    <iframe id="bg-video" src="https://www.youtube.com/embed/SxBx76VSRLU?autoplay=1&mute=1&controls=0&loop=1&playlist=SxBx76VSRLU&playsinline=1&rel=0&showinfo=0&modestbranding=1" allow="autoplay; encrypted-media" tabindex="-1"></iframe>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress-bar" id="scroll-progress" aria-hidden="true"></div>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- 1. LOADER                                                  -->
@@ -50,12 +144,12 @@
 
       <!-- Desktop Nav Links -->
       <ul class="nav-links" id="nav-links">
-        <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
-        <li><a href="#work" class="nav-link" data-section="work">Work</a></li>
-        <li><a href="#about" class="nav-link" data-section="about">About</a></li>
-        <li><a href="#capabilities" class="nav-link" data-section="capabilities">Capabilities</a></li>
-        <li><a href="#journey" class="nav-link" data-section="journey">Journey</a></li>
-        <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+        <li><a href="#home" class="nav-link active" data-section="home" aria-label="Navigate to Home section">Home</a></li>
+        <li><a href="#work" class="nav-link" data-section="work" aria-label="Navigate to Work section">Work</a></li>
+        <li><a href="#about" class="nav-link" data-section="about" aria-label="Navigate to About section">About</a></li>
+        <li><a href="#capabilities" class="nav-link" data-section="capabilities" aria-label="Navigate to Capabilities section">Capabilities</a></li>
+        <li><a href="#journey" class="nav-link" data-section="journey" aria-label="Navigate to Journey section">Journey</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact" aria-label="Navigate to Contact section">Contact</a></li>
       </ul>
 
       <!-- Nav Actions -->
@@ -77,12 +171,12 @@
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu" id="mobile-menu">
       <ul class="mobile-nav-links">
-        <li><a href="#home" class="mobile-nav-link" data-section="home">Home</a></li>
-        <li><a href="#work" class="mobile-nav-link" data-section="work">Work</a></li>
-        <li><a href="#about" class="mobile-nav-link" data-section="about">About</a></li>
-        <li><a href="#capabilities" class="mobile-nav-link" data-section="capabilities">Capabilities</a></li>
-        <li><a href="#journey" class="mobile-nav-link" data-section="journey">Journey</a></li>
-        <li><a href="#contact" class="mobile-nav-link" data-section="contact">Contact</a></li>
+        <li><a href="#home" class="mobile-nav-link" data-section="home" aria-label="Navigate to Home section">Home</a></li>
+        <li><a href="#work" class="mobile-nav-link" data-section="work" aria-label="Navigate to Work section">Work</a></li>
+        <li><a href="#about" class="mobile-nav-link" data-section="about" aria-label="Navigate to About section">About</a></li>
+        <li><a href="#capabilities" class="mobile-nav-link" data-section="capabilities" aria-label="Navigate to Capabilities section">Capabilities</a></li>
+        <li><a href="#journey" class="mobile-nav-link" data-section="journey" aria-label="Navigate to Journey section">Journey</a></li>
+        <li><a href="#contact" class="mobile-nav-link" data-section="contact" aria-label="Navigate to Contact section">Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -108,11 +202,13 @@
 
           <h1 class="hero-title reveal" data-delay="0.1">
             <span class="title-line">Hi, I'm</span>
-            <span class="title-name">Lakshay<br /><span class="title-name-accent">Bana</span></span>
+            <span class="title-name">Lakshay<br />
+              <span class="title-name-accent"><i class="art-italic">Bana.</i></span>
+            </span>
           </h1>
 
           <p class="hero-tagline reveal" data-delay="0.2">
-            Turning bold ideas into unforgettable digital experiences — through design, code, and a touch of creative madness.
+            Turning <i class="art-italic">bold ideas</i> into unforgettable digital experiences — through <strong class="art-bold">design</strong>, code, and a touch of creative madness.
           </p>
 
           <div class="hero-cta reveal" data-delay="0.3">
@@ -173,133 +269,141 @@
           <h2 class="section-title">Selected Projects</h2>
         </div>
 
-        <!-- Project Showcase -->
-        <div class="project-showcase">
+        <!-- Project Showcase Wrap -->
+        <div class="project-showcase-wrap" id="project-showcase-wrap">
+          <div class="project-showcase" id="project-showcase">
 
-          <!-- Project 1 — NovaBlog -->
-          <article class="project-card reveal" data-delay="0">
-            <div class="project-visual" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-              <span class="project-index">01</span>
-            </div>
-            <div class="project-content">
-              <div class="project-tags">
-                <span class="tag">React</span>
-                <span class="tag">Node.js</span>
-                <span class="tag">MongoDB</span>
+            <!-- Project 1 — NovaBlog -->
+            <article class="project-card reveal" data-delay="0">
+              <div class="project-visual" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <img class="project-img" src="project_novablog.png" alt="NovaBlog — Content Platform Dashboard Mockup" width="800" height="600" loading="lazy" />
+                <span class="project-index">01</span>
               </div>
-              <h3 class="project-title">NovaBlog — Content Platform</h3>
-              <p class="project-role">Full-Stack Development</p>
-              <p class="project-desc">A full-stack blogging platform with real-time editing, rich media support, and a sleek dark-mode interface.</p>
-              <a href="#" class="project-link" aria-label="View NovaBlog project details">
-                <span>View Project</span>
-                <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-          </article>
-
-          <!-- Project 2 — HealthSync -->
-          <article class="project-card project-card--reversed reveal" data-delay="0.1">
-            <div class="project-visual" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
-              <span class="project-index">02</span>
-            </div>
-            <div class="project-content">
-              <div class="project-tags">
-                <span class="tag">Figma</span>
-                <span class="tag">UI/UX</span>
-                <span class="tag">Prototyping</span>
+              <div class="project-content">
+                <div class="project-tags">
+                  <span class="tag">React</span>
+                  <span class="tag">Node.js</span>
+                  <span class="tag">MongoDB</span>
+                </div>
+                <h3 class="project-title">NovaBlog — Content Platform</h3>
+                <p class="project-role">Full-Stack Development</p>
+                <p class="project-desc">A full-stack blogging platform with real-time editing, rich media support, and a sleek dark-mode interface.</p>
+                <a href="#" class="project-link" aria-label="View NovaBlog project details">
+                  <span>View Project</span>
+                  <i class="fas fa-arrow-right"></i>
+                </a>
               </div>
-              <h3 class="project-title">HealthSync — Wellness Tracker</h3>
-              <p class="project-role">UI/UX Design</p>
-              <p class="project-desc">A comprehensive health tracking app UI with intuitive dashboards, workout logging, and nutrition insights.</p>
-              <a href="#" class="project-link" aria-label="View HealthSync project details">
-                <span>View Project</span>
-                <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-          </article>
+            </article>
 
-          <!-- Project 3 — AquaPure -->
-          <article class="project-card reveal" data-delay="0.2">
-            <div class="project-visual" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
-              <span class="project-index">03</span>
-            </div>
-            <div class="project-content">
-              <div class="project-tags">
-                <span class="tag">Branding</span>
-                <span class="tag">Illustrator</span>
-                <span class="tag">Identity</span>
+            <!-- Project 2 — HealthSync -->
+            <article class="project-card project-card--reversed reveal" data-delay="0.1">
+              <div class="project-visual" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                <img class="project-img" src="project_healthsync.png" alt="HealthSync — Wellness Tracker Dashboard Mockup" width="800" height="600" loading="lazy" />
+                <span class="project-index">02</span>
               </div>
-              <h3 class="project-title">AquaPure — Brand Identity</h3>
-              <p class="project-role">Brand Design &amp; Strategy</p>
-              <p class="project-desc">Complete brand identity system for a premium water purification startup — logo, typography, and brand guidelines.</p>
-              <a href="#" class="project-link" aria-label="View AquaPure project details">
-                <span>View Project</span>
-                <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-          </article>
-
-          <!-- Project 4 — NightOwl -->
-          <article class="project-card project-card--reversed reveal" data-delay="0.3">
-            <div class="project-visual" style="background: linear-gradient(135deg, #30cfd0, #330867);">
-              <span class="project-index">04</span>
-            </div>
-            <div class="project-content">
-              <div class="project-tags">
-                <span class="tag">Brand Design</span>
-                <span class="tag">Motion</span>
-                <span class="tag">Logo</span>
+              <div class="project-content">
+                <div class="project-tags">
+                  <span class="tag">Figma</span>
+                  <span class="tag">UI/UX</span>
+                  <span class="tag">Prototyping</span>
+                </div>
+                <h3 class="project-title">HealthSync — Wellness Tracker</h3>
+                <p class="project-role">UI/UX Design</p>
+                <p class="project-desc">A comprehensive health tracking app UI with intuitive dashboards, workout logging, and nutrition insights.</p>
+                <a href="#" class="project-link" aria-label="View HealthSync project details">
+                  <span>View Project</span>
+                  <i class="fas fa-arrow-right"></i>
+                </a>
               </div>
-              <h3 class="project-title">NightOwl — Agency Rebrand</h3>
-              <p class="project-role">Creative Direction</p>
-              <p class="project-desc">A full brand overhaul for a digital marketing agency — including animated logo, social assets, and brand voice.</p>
-              <a href="#" class="project-link" aria-label="View NightOwl project details">
-                <span>View Project</span>
-                <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-          </article>
+            </article>
 
-          <!-- Project 5 — FoodRush -->
-          <article class="project-card reveal" data-delay="0.4">
-            <div class="project-visual" style="background: linear-gradient(135deg, #ff758c, #ff7eb3);">
-              <span class="project-index">05</span>
-            </div>
-            <div class="project-content">
-              <div class="project-tags">
-                <span class="tag">UI/UX</span>
-                <span class="tag">React Native</span>
+            <!-- Project 3 — AquaPure -->
+            <article class="project-card reveal" data-delay="0.2">
+              <div class="project-visual" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                <img class="project-img" src="project_aquapure.png" alt="AquaPure — Brand Identity Mockup" width="800" height="600" loading="lazy" />
+                <span class="project-index">03</span>
               </div>
-              <h3 class="project-title">FoodRush — Food Delivery</h3>
-              <p class="project-role">Mobile App Design</p>
-              <p class="project-desc">A seamless food delivery application with real-time tracking, intuitive ordering flow, and dynamic categorization.</p>
-              <a href="#" class="project-link" aria-label="View FoodRush project details">
-                <span>View Project</span>
-                <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-          </article>
-
-          <!-- Project 6 — WeatherLens -->
-          <article class="project-card project-card--reversed reveal" data-delay="0.5">
-            <div class="project-visual" style="background: linear-gradient(135deg, #89f7fe, #66a6ff);">
-              <span class="project-index">06</span>
-            </div>
-            <div class="project-content">
-              <div class="project-tags">
-                <span class="tag">API</span>
-                <span class="tag">Frontend</span>
+              <div class="project-content">
+                <div class="project-tags">
+                  <span class="tag">Branding</span>
+                  <span class="tag">Illustrator</span>
+                  <span class="tag">Identity</span>
+                </div>
+                <h3 class="project-title">AquaPure — Brand Identity</h3>
+                <p class="project-role">Brand Design &amp; Strategy</p>
+                <p class="project-desc">Complete brand identity system for a premium water purification startup — logo, typography, and brand guidelines.</p>
+                <a href="#" class="project-link" aria-label="View AquaPure project details">
+                  <span>View Project</span>
+                  <i class="fas fa-arrow-right"></i>
+                </a>
               </div>
-              <h3 class="project-title">WeatherLens — Forecasting App</h3>
-              <p class="project-role">Frontend Development</p>
-              <p class="project-desc">A beautiful weather forecasting application featuring interactive maps, 7-day outlooks, and localized alerts.</p>
-              <a href="#" class="project-link" aria-label="View WeatherLens project details">
-                <span>View Project</span>
-                <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
-          </article>
+            </article>
 
+            <!-- Project 4 — NightOwl -->
+            <article class="project-card project-card--reversed reveal" data-delay="0.3">
+              <div class="project-visual" style="background: linear-gradient(135deg, #30cfd0, #330867);">
+                <img class="project-img" src="project_nightowl.png" alt="NightOwl — Agency Rebrand Mockup" width="800" height="600" loading="lazy" />
+                <span class="project-index">04</span>
+              </div>
+              <div class="project-content">
+                <div class="project-tags">
+                  <span class="tag">Brand Design</span>
+                  <span class="tag">Motion</span>
+                  <span class="tag">Logo</span>
+                </div>
+                <h3 class="project-title">NightOwl — Agency Rebrand</h3>
+                <p class="project-role">Creative Direction</p>
+                <p class="project-desc">A full brand overhaul for a digital marketing agency — including animated logo, social assets, and brand voice.</p>
+                <a href="#" class="project-link" aria-label="View NightOwl project details">
+                  <span>View Project</span>
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </article>
+
+            <!-- Project 5 — FoodRush -->
+            <article class="project-card reveal" data-delay="0.4">
+              <div class="project-visual" style="background: linear-gradient(135deg, #ff758c, #ff7eb3);">
+                <img class="project-img" src="project_foodrush.png" alt="FoodRush — Food Delivery Mobile App UI Mockup" width="800" height="600" loading="lazy" />
+                <span class="project-index">05</span>
+              </div>
+              <div class="project-content">
+                <div class="project-tags">
+                  <span class="tag">UI/UX</span>
+                  <span class="tag">React Native</span>
+                </div>
+                <h3 class="project-title">FoodRush — Food Delivery</h3>
+                <p class="project-role">Mobile App Design</p>
+                <p class="project-desc">A seamless food delivery application with real-time tracking, intuitive ordering flow, and dynamic categorization.</p>
+                <a href="#" class="project-link" aria-label="View FoodRush project details">
+                  <span>View Project</span>
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </article>
+
+            <!-- Project 6 — WeatherLens -->
+            <article class="project-card project-card--reversed reveal" data-delay="0.5">
+              <div class="project-visual" style="background: linear-gradient(135deg, #89f7fe, #66a6ff);">
+                <img class="project-img" src="project_weatherlens.png" alt="WeatherLens — Weather Forecasting Dashboard Mockup" width="800" height="600" loading="lazy" />
+                <span class="project-index">06</span>
+              </div>
+              <div class="project-content">
+                <div class="project-tags">
+                  <span class="tag">API</span>
+                  <span class="tag">Frontend</span>
+                </div>
+                <h3 class="project-title">WeatherLens — Forecasting App</h3>
+                <p class="project-role">Frontend Development</p>
+                <p class="project-desc">A beautiful weather forecasting application featuring interactive maps, 7-day outlooks, and localized alerts.</p>
+                <a href="#" class="project-link" aria-label="View WeatherLens project details">
+                  <span>View Project</span>
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </article>
+
+          </div>
         </div>
       </div>
     </section>
@@ -326,10 +430,13 @@
 
           <!-- About Content (Right) -->
           <div class="about-content reveal-right" data-delay="0.1">
-            <span class="section-tag"><i class="fas fa-user"></i> About Me</span>
+            <div class="section-header">
+              <span class="section-tag"><i class="fas fa-user"></i> About Me</span>
+              <h2 class="section-title">About Me</h2>
+            </div>
 
             <h3 class="about-heading">
-              A passionate freelancer who <span class="accent">creates</span> at the intersection of art &amp; technology.
+              A passionate freelancer who <span class="accent"><i class="art-italic">creates</i></span> at the intersection of <strong class="art-bold">art</strong> &amp; technology.
             </h3>
 
             <p class="about-text">
@@ -572,7 +679,7 @@
           <!-- Contact Info (Left) -->
           <div class="contact-info reveal-left" data-delay="0">
             <h3 class="contact-heading">
-              Have a project in mind? Let's build something <span class="accent">amazing</span> together.
+              Have a project in mind? Let's build something <span class="accent"><i class="art-italic">amazing</i></span> together.
             </h3>
             <p class="contact-text">
               I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision. Whether you need a full website, a brand identity, or just some creative direction — let's talk.
@@ -709,7 +816,7 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-inner">
-        <div class="footer-logo">LB<span class="logo-dot">.</span></div>
+        <a href="#home" class="footer-logo" aria-label="Lakshay Bana — Back to top">LB<span class="logo-dot">.</span></a>
         <p class="footer-text">Designed &amp; Built with <span class="heart">♥</span> by <strong>Lakshay Bana</strong></p>
         <p class="footer-copy">&copy; <span id="year"></span> All Rights Reserved.</p>
       </div>
@@ -726,6 +833,8 @@
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- 12. SCRIPTS                                                -->
   <!-- ═══════════════════════════════════════════════════════════ -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
 
 </body>
