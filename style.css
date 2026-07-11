@@ -222,13 +222,7 @@ p {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(65, 65, 79, 0.85); /* Dark Slate Overlay */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-[data-theme='light'] .video-overlay {
-  background: rgba(251, 224, 210, 0.85); /* Peach Overlay */
+  background: rgba(10, 10, 15, 0.3); /* Dark, semi-transparent overlay for text readability while keeping video visible */
 }
 
 /* ─────────────────────────────────────────────────────────────

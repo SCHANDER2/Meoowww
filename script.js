@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initLoader();
   initCursor();
   initNavbar();
-  initThemeToggle();
   initScrollReveals();
   initScrollTop();
   initContactForm();
@@ -261,37 +260,6 @@ function initSmoothScroll() {
   });
 }
 
-
-/* ────────────────────────────────────────────────────────────
-   6. THEME TOGGLE
-   ──────────────────────────────────────────────────────────── */
-function initThemeToggle() {
-  const btn  = document.getElementById('theme-toggle');
-  const icon = document.getElementById('theme-icon');
-  const html = document.documentElement;
-
-  if (!btn) return;
-
-  // Restore saved preference
-  const saved = localStorage.getItem('theme');
-  if (saved) {
-    html.setAttribute('data-theme', saved);
-    updateIcon(saved);
-  }
-
-  btn.addEventListener('click', () => {
-    const current = html.getAttribute('data-theme') || 'dark';
-    const next    = current === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateIcon(next);
-  });
-
-  function updateIcon(theme) {
-    if (!icon) return;
-    icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-  }
-}
 
 
 /* ────────────────────────────────────────────────────────────
@@ -670,10 +638,16 @@ function initCounterAnimation() {
   const countEl = document.querySelector('.exp-number');
   if (!countEl) return;
   
+  const originalText = countEl.textContent.trim();
+  const numericValue = parseInt(originalText, 10);
+  
+  // Skip if it contains non-numeric data like "AI"
+  if (isNaN(numericValue)) return;
+  
   const countObj = { val: 0 };
   
   gsap.to(countObj, {
-    val: 3,
+    val: numericValue,
     duration: 2,
     ease: 'power2.out',
     scrollTrigger: {
@@ -682,7 +656,7 @@ function initCounterAnimation() {
       toggleActions: 'play none none none'
     },
     onUpdate: () => {
-      countEl.textContent = Math.floor(countObj.val) + '+';
+      countEl.textContent = Math.floor(countObj.val) + (originalText.includes('+') ? '+' : '');
     }
   });
 }
