@@ -337,35 +337,38 @@ function initScrollReveals() {
         }
       });
     });
-  } else {
-    const reveals = document.querySelectorAll(
-      '.reveal, .reveal-left, .reveal-right'
-    );
-
-    if (!reveals.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const delay = entry.target.dataset.delay || 0;
-
-            setTimeout(() => {
-              entry.target.classList.add('revealed');
-            }, delay * 100);
-
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px',
-      }
-    );
-
-    reveals.forEach((el) => observer.observe(el));
   }
+
+  // Always run IntersectionObserver for general reveals, excluding elements animated by GSAP above
+  const reveals = document.querySelectorAll(
+    'section:not(#home) .reveal:not(.capability-card), ' +
+    'section:not(#home) .reveal-left:not(.timeline-item), ' +
+    'section:not(#home) .reveal-right:not(.timeline-item)'
+  );
+
+  if (!reveals.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const delay = entry.target.dataset.delay || 0;
+
+          setTimeout(() => {
+            entry.target.classList.add('revealed');
+          }, delay * 100);
+
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px',
+    }
+  );
+
+  reveals.forEach((el) => observer.observe(el));
 }
 
 

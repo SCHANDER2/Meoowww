@@ -1794,7 +1794,8 @@ body.custom-cursor {
               transform 0.8s var(--ease-out-expo);
 }
 
-.reveal.revealed {
+.reveal.revealed,
+.reveal.visible {
   opacity: 1;
   transform: translateY(0) translateX(0);
 }
@@ -1806,7 +1807,8 @@ body.custom-cursor {
               transform 0.8s var(--ease-out-expo);
 }
 
-.reveal-left.revealed {
+.reveal-left.revealed,
+.reveal-left.visible {
   opacity: 1;
   transform: translateX(0);
 }
@@ -1818,7 +1820,8 @@ body.custom-cursor {
               transform 0.8s var(--ease-out-expo);
 }
 
-.reveal-right.revealed {
+.reveal-right.revealed,
+.reveal-right.visible {
   opacity: 1;
   transform: translateX(0);
 }
