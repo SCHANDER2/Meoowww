@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://meoowww-eight.vercel.app/sitemap.xml
+Sitemap: https://meoowww.vercel.app/sitemap.xml
