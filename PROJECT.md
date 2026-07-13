@@ -8,7 +8,7 @@ Static single-page portfolio site — pure HTML/CSS/Vanilla JS + GSAP (no build 
 - **style.css** — Complete design system with CSS custom properties, dark/light themes
 - **script.js** — Vanilla JS: loader, cursor, navbar, theme toggle, scroll reveals, contact form, parallax
 - **Images**: hero_bg.png, profile_avatar.png, project_*.png (4 project images)
-- **Deployed at**: https://meoowww.vercel.app
+- **Deployed at**: https://meoowww-rajenderbana83-4133s-projects.vercel.app
 
 ## Milestones
 
@@ -46,7 +46,7 @@ c:\Users\G4\OneDrive\Desktop\MEOOWWW\
 
 ## Key Constraints
 - Pure HTML/CSS/Vanilla JS + GSAP — no build tools, no frameworks
-- All absolute URLs: https://meoowww.vercel.app
+- All absolute URLs: https://meoowww-rajenderbana83-4133s-projects.vercel.app
 - Existing functionality MUST be preserved: theme toggle, mobile menu, contact form, smooth scroll, custom cursor
 - Mobile responsive (375px, 768px)
 - GSAP enhances, does not replace existing behavior

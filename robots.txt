@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://meoowww.vercel.app/sitemap.xml
+Sitemap: https://meoowww-rajenderbana83-4133s-projects.vercel.app/sitemap.xml
