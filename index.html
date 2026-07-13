@@ -104,6 +104,11 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
 <body class="no-transition">
 
@@ -157,7 +162,7 @@
       <div class="nav-actions">
 
         <!-- Mobile Hamburger -->
-        <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false">
+        <button class="hamburger menu-btn" id="hamburger" aria-label="Open navigation menu" aria-expanded="false">
           <span></span>
           <span></span>
           <span></span>
@@ -418,8 +423,8 @@
               <div class="about-accent-border" aria-hidden="true"></div>
             </div>
             <div class="about-exp-badge">
-              <span class="exp-number">3+</span>
-              <span class="exp-label">ML / Web<br />Engineer</span>
+              <span class="exp-num exp-number">3+</span>
+              <span class="exp-txt exp-label">ML / Web<br />Engineer</span>
             </div>
           </div>
 
@@ -578,14 +583,14 @@
 
           <!-- Timeline Item 1 — GDG -->
           <div class="timeline-item reveal-left" data-delay="0">
-            <div class="timeline-marker">
+            <div class="timeline-marker timeline-dot">
               <i class="fas fa-users"></i>
             </div>
-            <div class="timeline-content">
-              <span class="timeline-date">2024 — Present</span>
+            <div class="timeline-content timeline-card">
+              <span class="timeline-date timeline-year">2024 — Present</span>
               <span class="timeline-type">Leadership</span>
               <h3 class="timeline-title">Senior Coordinator</h3>
-              <p class="timeline-subtitle">Google Developer Group (GDG), JCBUST</p>
+              <p class="timeline-subtitle timeline-place">Google Developer Group (GDG), JCBUST</p>
               <p class="timeline-desc">Coordinating technical initiatives, workshops, and student engagement activities. Collaborating with cross-functional teams to organize developer-focused events.</p>
               <div class="timeline-tags">
                 <span class="tag">Leadership</span>
@@ -597,14 +602,14 @@
 
           <!-- Timeline Item 2 — B.Tech -->
           <div class="timeline-item reveal-right" data-delay="0.1">
-            <div class="timeline-marker">
+            <div class="timeline-marker timeline-dot">
               <i class="fas fa-graduation-cap"></i>
             </div>
-            <div class="timeline-content">
-              <span class="timeline-date">2023 — 2027</span>
+            <div class="timeline-content timeline-card">
+              <span class="timeline-date timeline-year">2023 — 2027</span>
               <span class="timeline-type">Degree</span>
               <h3 class="timeline-title">B.Tech Computer Science Engineering</h3>
-              <p class="timeline-subtitle">J.C. Bose University of Science &amp; Technology (YMCA)</p>
+              <p class="timeline-subtitle timeline-place">J.C. Bose University of Science &amp; Technology (YMCA)</p>
               <p class="timeline-desc">Pursuing comprehensive studies in AI, Machine Learning, DBMS, and Compiler Design. Maintaining a strong 7.85 CGPA while building real-world AI applications.</p>
               <div class="timeline-tags">
                 <span class="tag">Computer Science</span>
@@ -616,14 +621,14 @@
 
           <!-- Timeline Item 3 — Hackathons -->
           <div class="timeline-item reveal-left" data-delay="0.2">
-            <div class="timeline-marker milestone-marker">
+            <div class="timeline-marker milestone-marker timeline-dot">
               <i class="fas fa-trophy"></i>
             </div>
-            <div class="timeline-content">
-              <span class="timeline-date">2024 — 2026</span>
+            <div class="timeline-content timeline-card">
+              <span class="timeline-date timeline-year">2024 — 2026</span>
               <span class="timeline-type timeline-type--milestone">Milestone</span>
               <h3 class="timeline-title">Hackathon Leadership</h3>
-              <p class="timeline-subtitle">SIH, HackLLM, TechAarambh</p>
+              <p class="timeline-subtitle timeline-place">SIH, HackLLM, TechAarambh</p>
               <p class="timeline-desc">Led multiple teams to success: Smart India Hackathon Regional Shortlist (AgroSathi), Top 10 at HackLLM, Top 15 in Ideathon out of 140+ teams (Kavach).</p>
               <div class="timeline-tags">
                 <span class="tag">Hackathons</span>
@@ -635,14 +640,14 @@
 
           <!-- Timeline Item 4 — School -->
           <div class="timeline-item reveal-right" data-delay="0.3">
-            <div class="timeline-marker">
+            <div class="timeline-marker timeline-dot">
               <i class="fas fa-school"></i>
             </div>
-            <div class="timeline-content">
-              <span class="timeline-date">Class XII</span>
+            <div class="timeline-content timeline-card">
+              <span class="timeline-date timeline-year">Class XII</span>
               <span class="timeline-type">School</span>
               <h3 class="timeline-title">Higher Secondary Education</h3>
-              <p class="timeline-subtitle">D.A.V. Senior Secondary School</p>
+              <p class="timeline-subtitle timeline-place">D.A.V. Senior Secondary School</p>
               <p class="timeline-desc">Completed PCM + Computer Science with 88.20% overall and 95.33% in PCM. Secured 97.19 percentile in JEE Main, laying a strong quantitative foundation.</p>
               <div class="timeline-tags">
                 <span class="tag">PCM + CS</span>
@@ -831,9 +836,6 @@
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- 12. SCRIPTS                                                -->
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/ScrollTrigger.min.js"></script>
-  <script src="script.js"></script>
 
 </body>
 </html>

@@ -2266,9 +2266,9 @@ body.no-transition *::after {
 
 /* ── Custom Text Reveals ── */
 .gsap-reveal-text {
-  display: inline-block;
+  display: block;
   overflow: hidden;
-  vertical-align: bottom;
+  width: 100%;
 }
 
 .gsap-reveal-text span {

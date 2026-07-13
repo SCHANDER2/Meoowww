@@ -603,19 +603,15 @@ function initHorizontalProjects() {
       workSection.classList.add('horizontal-scroll-mode');
       showcase.classList.add('horizontal-active');
       
-      const showcaseWidth = showcase.scrollWidth;
-      const windowWidth = window.innerWidth;
-      const xScrollAmount = -(showcaseWidth - windowWidth);
-      
       scrollTriggerInstance = ScrollTrigger.create({
         trigger: workSection,
         pin: true,
         start: 'top top',
-        end: () => `+=${showcaseWidth - windowWidth}`,
+        end: () => `+=${showcase.scrollWidth - window.innerWidth}`,
         scrub: 1,
         invalidateOnRefresh: true,
         animation: gsap.to(showcase, {
-          x: xScrollAmount,
+          x: () => -(showcase.scrollWidth - window.innerWidth),
           ease: 'none'
         })
       });
