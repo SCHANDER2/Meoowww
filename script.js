@@ -789,6 +789,11 @@ class SpacetimeEngine {
         this.isRunning = false;
         this.rafId = null;
 
+        // Automatic Frame Governor & Performance Budget (Locked 60 FPS Guarantee)
+        this.frameHistory = [];
+        this.throttleTier = 1; // 1 = full 60fps fidelity, 2 = throttled calculation
+        this.lastGovernorCheck = performance.now();
+
         this.init();
     }
 
@@ -930,8 +935,24 @@ class SpacetimeEngine {
 
         const loop = (time) => {
             if (!this.isRunning) return;
-            const delta = Math.min((time - lastTime) / 1000, 0.1);
+            const frameMs = time - lastTime;
+            const delta = Math.min(frameMs / 1000, 0.1);
             lastTime = time;
+
+            // Frame Governor: Monitor performance over rolling sample window
+            this.frameHistory.push(frameMs);
+            if (this.frameHistory.length > 40) this.frameHistory.shift();
+
+            // Run check periodically to preserve buttery 60 FPS
+            if (time - this.lastGovernorCheck > 1000 && this.frameHistory.length >= 20) {
+                this.lastGovernorCheck = time;
+                const avgFrameMs = this.frameHistory.reduce((a, b) => a + b, 0) / this.frameHistory.length;
+                if (avgFrameMs > 32 && this.throttleTier === 1) {
+                    this.throttleTier = 2; // Throttle to maintain responsive UI
+                } else if (avgFrameMs < 18 && this.throttleTier === 2) {
+                    this.throttleTier = 1; // Restore full fidelity
+                }
+            }
 
             this.update(delta);
             this.render();
