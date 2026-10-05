@@ -315,19 +315,14 @@ gsap.utils.toArray('.counter').forEach(counter => {
 const themeToggle = document.getElementById('theme-toggle');
 const htmlEl = document.documentElement;
 
-// Initialize theme — strictly Dark by default
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-    htmlEl.setAttribute('data-theme', savedTheme);
-} else {
-    htmlEl.setAttribute('data-theme', 'dark');
-}
+// Initialize theme — strictly Dark by default (reset legacy light preference)
+let currentTheme = localStorage.getItem('theme_v2') || 'dark';
+htmlEl.setAttribute('data-theme', currentTheme);
 
 themeToggle.addEventListener('click', () => {
-    const currentTheme = htmlEl.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    htmlEl.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+    currentTheme = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    htmlEl.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('theme_v2', currentTheme);
     playInteractionSound();
 });
 

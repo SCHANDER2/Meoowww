@@ -149,3 +149,62 @@ Create both files in the project root:
 - [ ] The contact form submission flow still works (form validates and shows success message).
 - [ ] The custom cursor still follows the mouse on desktop.
 - [ ] The page renders correctly on mobile viewport widths (375px and 768px).
+
+## Follow-up — 2026-07-12T11:55:00Z
+
+Audit the MEOOWWW portfolio website against the user's original requirements and implement any missing or misaligned features step-by-step. The focus is on ensuring the UI feels like a premium "art piece," utilizes the user's specified creative styling (bold/italic typography), and completely reflects the provided resume data without looking "AI-generated."
+
+Working directory: c:\Users\G4\OneDrive\Desktop\MEOOWWW
+Integrity mode: development
+
+## Requirements
+
+### R1. Comprehensive Audit
+Review the conversation logs (or provided `ORIGINAL_REQUEST.md`/resume data) against the current state of `index.html`, `style.css`, and `script.js`. Identify any missed requirements—specifically regarding the "art piece" aesthetic, the custom color palette, creative typography (bold/italics), and resume data integration.
+
+### R2. Step-by-Step Implementation
+For every gap identified in R1, implement the fix directly in the codebase. Do this sequentially, ensuring each change aligns with the premium, non-AI-generated artistic direction requested by the user.
+
+### R3. Quality Assurance
+Ensure all existing functionality (GSAP animations, horizontal scrolling, responsive design, video background) remains intact and functional after your modifications.
+
+## Acceptance Criteria
+
+### Completeness
+- [ ] A written audit checklist is produced detailing what was checked and what was found missing.
+- [ ] All missing items from the checklist are implemented in the codebase.
+
+### Code Quality
+- [ ] The background video remains clearly visible, and the site defaults to the dark theme without a toggle.
+
+## Follow-up — 2026-07-13T12:08:04+05:30
+
+Verify and audit the portfolio website codebase to ensure all requirements described in ORIGINAL_REQUEST.md are fully satisfied, and refine/improve any details to make the UI look like a premium art piece.
+
+Working directory: c:\Users\G4\OneDrive\Desktop\MEOOWWW
+Integrity mode: development
+
+## Requirements
+
+### R1. Verification of SEO, Performance, and GSAP Requirements
+Ensure that all criteria in ORIGINAL_REQUEST.md (canonical base URL, open graph tags, JSON-LD schema, performance optimization, and GSAP scroll animations/counter badge) are fully met and function correctly without bugs or console errors.
+
+### R2. Refinement & Visual Polish
+Verify that the Playfair Display typography matches editorial aesthetics, background video overlays are solid, and mobile layout text wrap has no collisions.
+
+### R3. Verification of Deployment
+All assets and index mappings must point exclusively to the production domain: https://meoowww-rajenderbana83-4133s-projects.vercel.app/
+
+## Acceptance Criteria
+
+### SEO & Standards
+- [ ] index.html canonical URL and all absolute links point to https://meoowww-rajenderbana83-4133s-projects.vercel.app/
+- [ ] Robots.txt and sitemap.xml exist and point to the correct production domain.
+- [ ] Single H1 tag exists containing "Lakshay Bana".
+- [ ] All img tags have descriptive alt attributes and explicit width/height dimensions.
+
+### Visual & Interactive Integrity
+- [ ] Loader background and mobile nav menu background are solid `#0a0a0b` to prevent content overlapping.
+- [ ] Playfair Display font is correctly loaded and applied using the `art-italic` helper class.
+- [ ] GSAP entrance and ScrollTrigger horizontal animations operate without console errors or layout shifts.
+- [ ] Experience badge correctly parses the integer value `3` and performs the count-up animation on scroll.
