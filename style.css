@@ -1280,3 +1280,40 @@ footer {
     padding-top: 1rem;
     border-top: 1px solid var(--border-subtle);
 }
+
+/* ==========================================================================
+   INTERACTIVE SPACETIME GRAVITATIONAL WELL CANVASES
+   ========================================================================== */
+.spacetime-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    user-select: none;
+}
+
+.bg-canvas {
+    z-index: -2;
+    opacity: 0.95;
+    will-change: transform;
+}
+
+.fg-canvas {
+    z-index: 40;
+    opacity: 0.65;
+    mix-blend-mode: screen;
+    will-change: transform;
+}
+
+/* Light Theme Adaptations */
+html[data-theme="light"] .bg-canvas {
+    opacity: 0.35;
+}
+
+html[data-theme="light"] .fg-canvas {
+    opacity: 0.25;
+    mix-blend-mode: multiply;
+}
+

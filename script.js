@@ -730,3 +730,443 @@ if (contactForm) {
         playInteractionSound();
     });
 }
+
+// ==========================================================================
+// 18. Interactive Spacetime Gravitational Well & Relativistic Warp Engine
+// ==========================================================================
+class SpacetimeEngine {
+    constructor() {
+        this.bgCanvas = document.getElementById('bg-spacetime-canvas');
+        this.fgCanvas = document.getElementById('fg-spacetime-canvas');
+
+        if (!this.bgCanvas || !this.fgCanvas) return;
+
+        this.bgCtx = this.bgCanvas.getContext('2d', { alpha: true });
+        this.fgCtx = this.fgCanvas.getContext('2d', { alpha: true });
+
+        // Brand Color Palettes with pre-calculated RGB
+        this.palette = [
+            { r: 198, g: 240, b: 228 }, // #C6F0E4 (Bright Mint)
+            { r: 167, g: 232, b: 215 }, // #A7E8D7 (Soft Aqua Mint)
+            { r: 138, g: 23,  b: 110 }, // #8A176E (Vibrant Electric Plum)
+            { r: 100, g: 22,  b: 93  }  // #64165D (Deep Regal Plum)
+        ];
+
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+        // Physics State
+        this.particles = [];
+        this.embers = [];
+        this.photons = [];
+
+        // Singularity / Cursor Coordinates
+        this.mouse = {
+            x: this.width * 0.5,
+            y: this.height * 0.5,
+            targetX: this.width * 0.5,
+            targetY: this.height * 0.5,
+            vx: 0,
+            vy: 0,
+            active: false,
+            radius: 190,
+            innerCore: 22
+        };
+
+        // Autonomous Mobile / Inactive Attractor (Lissajous path)
+        this.autoAttractor = {
+            angle: 0,
+            x: this.width * 0.5,
+            y: this.height * 0.5
+        };
+
+        // Relativistic Scroll Coupling
+        this.scrollVelocity = 0;
+        this.targetScrollVelocity = 0;
+
+        this.isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+        this.isRunning = false;
+        this.rafId = null;
+
+        this.init();
+    }
+
+    init() {
+        this.handleResize();
+        this.initParticles();
+        this.bindEvents();
+        this.start();
+    }
+
+    handleResize() {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+        [this.bgCanvas, this.fgCanvas].forEach(canvas => {
+            canvas.width = Math.floor(this.width * this.dpr);
+            canvas.height = Math.floor(this.height * this.dpr);
+            canvas.style.width = `${this.width}px`;
+            canvas.style.height = `${this.height}px`;
+        });
+
+        this.bgCtx.scale(this.dpr, this.dpr);
+        this.fgCtx.scale(this.dpr, this.dpr);
+    }
+
+    initParticles() {
+        this.particles = [];
+        this.embers = [];
+        this.photons = [];
+
+        // Adaptive particle count for silky 60fps on all devices
+        const bgCount = this.isCoarsePointer || this.width < 768 ? 120 : 260;
+        const fgCount = this.isCoarsePointer || this.width < 768 ? 16 : 36;
+
+        // Background Continuum Particles (Stars / Quantum Grid Nodes)
+        for (let i = 0; i < bgCount; i++) {
+            const col = this.palette[Math.floor(Math.random() * this.palette.length)];
+            this.particles.push({
+                x: Math.random() * this.width,
+                y: Math.random() * this.height,
+                originX: Math.random() * this.width,
+                originY: Math.random() * this.height,
+                vx: (Math.random() - 0.5) * 0.45,
+                vy: (Math.random() - 0.5) * 0.45,
+                baseRadius: Math.random() * 1.6 + 0.6,
+                color: col,
+                alpha: Math.random() * 0.5 + 0.25,
+                baseAlpha: Math.random() * 0.5 + 0.25,
+                pulseSpeed: Math.random() * 0.02 + 0.005,
+                pulseAngle: Math.random() * Math.PI * 2,
+                orbitVelocity: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.02 + 0.015)
+            });
+        }
+
+        // Foreground Soft Luminous Embers
+        for (let i = 0; i < fgCount; i++) {
+            const col = this.palette[Math.floor(Math.random() * 2)]; // Highlight in mint hues
+            this.embers.push({
+                x: Math.random() * this.width,
+                y: Math.random() * this.height,
+                vx: (Math.random() - 0.5) * 0.35,
+                vy: -Math.random() * 0.45 - 0.2, // Slow upward buoyancy
+                radius: Math.random() * 4.5 + 2.5,
+                color: col,
+                alpha: Math.random() * 0.4 + 0.2,
+                baseAlpha: Math.random() * 0.4 + 0.2,
+                phase: Math.random() * Math.PI * 2,
+                phaseSpeed: Math.random() * 0.015 + 0.008
+            });
+        }
+    }
+
+    spawnPhotonSpark(x, y, vx, vy, color) {
+        if (this.photons.length > 40) return; // Pool limit
+        this.photons.push({
+            x: x,
+            y: y,
+            vx: vx + (Math.random() - 0.5) * 2.5,
+            vy: vy + (Math.random() - 0.5) * 2.5,
+            life: 1.0,
+            decay: Math.random() * 0.04 + 0.025,
+            color: color || this.palette[0],
+            radius: Math.random() * 1.8 + 0.8
+        });
+    }
+
+    bindEvents() {
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.handleResize();
+                this.initParticles();
+            }, 180);
+        });
+
+        // Pointer move updates Singularity target
+        window.addEventListener('pointermove', (e) => {
+            this.mouse.targetX = e.clientX;
+            this.mouse.targetY = e.clientY;
+            this.mouse.active = true;
+        }, { passive: true });
+
+        // Touch interaction
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches[0]) {
+                this.mouse.targetX = e.touches[0].clientX;
+                this.mouse.targetY = e.touches[0].clientY;
+                this.mouse.active = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener('pointerleave', () => {
+            this.mouse.active = false;
+        });
+
+        // Relativistic Lenis Scroll Coupling
+        if (typeof lenis !== 'undefined') {
+            lenis.on('scroll', (e) => {
+                this.targetScrollVelocity = (e.velocity || 0) * 0.25;
+            });
+        }
+
+        // Energy saving: Pause rendering when document hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.stop();
+            } else {
+                this.start();
+            }
+        });
+    }
+
+    start() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        let lastTime = performance.now();
+
+        const loop = (time) => {
+            if (!this.isRunning) return;
+            const delta = Math.min((time - lastTime) / 1000, 0.1);
+            lastTime = time;
+
+            this.update(delta);
+            this.render();
+
+            this.rafId = requestAnimationFrame(loop);
+        };
+        this.rafId = requestAnimationFrame(loop);
+    }
+
+    stop() {
+        this.isRunning = false;
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId);
+            this.rafId = null;
+        }
+    }
+
+    update(delta) {
+        // Smooth cursor tracking with spring physics
+        const prevMx = this.mouse.x;
+        const prevMy = this.mouse.y;
+
+        if (this.mouse.active) {
+            this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.14;
+            this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.14;
+        } else {
+            // Autonomous orbit (graceful harmonic motion)
+            this.autoAttractor.angle += 0.012;
+            const cx = this.width * 0.5;
+            const cy = this.height * 0.45;
+            const rx = Math.min(this.width * 0.28, 260);
+            const ry = Math.min(this.height * 0.2, 160);
+
+            const autoX = cx + Math.cos(this.autoAttractor.angle) * rx;
+            const autoY = cy + Math.sin(this.autoAttractor.angle * 1.5) * ry;
+
+            this.mouse.x += (autoX - this.mouse.x) * 0.05;
+            this.mouse.y += (autoY - this.mouse.y) * 0.05;
+        }
+
+        this.mouse.vx = this.mouse.x - prevMx;
+        this.mouse.vy = this.mouse.y - prevMy;
+
+        // Smooth scroll velocity decay
+        this.scrollVelocity += (this.targetScrollVelocity - this.scrollVelocity) * 0.12;
+        this.targetScrollVelocity *= 0.88;
+
+        const mx = this.mouse.x;
+        const my = this.mouse.y;
+        const pullRadius = this.mouse.radius;
+        const coreRadius = this.mouse.innerCore;
+        const scrollWarp = Math.min(Math.abs(this.scrollVelocity) * 1.5, 25);
+
+        // 1. Update Background Continuum Particles
+        for (let i = 0; i < this.particles.length; i++) {
+            const p = this.particles[i];
+
+            // Ambient cosmic twinkle
+            p.pulseAngle += p.pulseSpeed;
+            p.alpha = p.baseAlpha + Math.sin(p.pulseAngle) * 0.15;
+
+            // Gravitational Vector to Singularity
+            const dx = p.x - mx;
+            const dy = p.y - my;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < pullRadius && dist > 1) {
+                const pullFactor = (1 - dist / pullRadius);
+                
+                // Radial attraction toward center
+                const force = pullFactor * pullFactor * 1.6;
+                const fx = (-dx / dist) * force;
+                const fy = (-dy / dist) * force;
+
+                // Tangential orbital accretion swirl
+                const swirlForce = pullFactor * 1.8;
+                const tx = (-dy / dist) * swirlForce;
+                const ty = (dx / dist) * swirlForce;
+
+                p.vx += fx + tx;
+                p.vy += fy + ty;
+
+                // Singularity Event Horizon Event: particle reaches the core
+                if (dist < coreRadius) {
+                    // Emit photon spark into accretion disk
+                    this.spawnPhotonSpark(p.x, p.y, p.vx * 1.8, p.vy * 1.8, p.color);
+
+                    // Re-eject into outer perimeter with fresh momentum
+                    const respawnAngle = Math.random() * Math.PI * 2;
+                    const respawnDist = pullRadius * (0.85 + Math.random() * 0.35);
+                    p.x = mx + Math.cos(respawnAngle) * respawnDist;
+                    p.y = my + Math.sin(respawnAngle) * respawnDist;
+                    p.vx = (Math.random() - 0.5) * 0.8;
+                    p.vy = (Math.random() - 0.5) * 0.8;
+                }
+            }
+
+            // Apply friction damping
+            p.vx *= 0.94;
+            p.vy *= 0.94;
+
+            // Move particle
+            p.x += p.vx;
+            p.y += p.vy + (this.scrollVelocity * 0.35);
+
+            // Screen boundary wrap
+            if (p.x < -30) p.x = this.width + 30;
+            if (p.x > this.width + 30) p.x = -30;
+            if (p.y < -30) p.y = this.height + 30;
+            if (p.y > this.height + 30) p.y = -30;
+        }
+
+        // 2. Update Foreground Luminous Embers
+        for (let i = 0; i < this.embers.length; i++) {
+            const e = this.embers[i];
+            e.phase += e.phaseSpeed;
+            e.x += e.vx + Math.sin(e.phase) * 0.35;
+            e.y += e.vy + (this.scrollVelocity * 0.6);
+
+            // Gentle repulsion / deflection when near singularity
+            const dx = e.x - mx;
+            const dy = e.y - my;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < pullRadius * 0.8 && dist > 1) {
+                const repulse = (1 - dist / (pullRadius * 0.8)) * 1.2;
+                e.vx += (dx / dist) * repulse * 0.3;
+                e.vy += (dy / dist) * repulse * 0.3;
+            }
+
+            e.vx *= 0.96;
+
+            // Screen wrap
+            if (e.x < -50) e.x = this.width + 50;
+            if (e.x > this.width + 50) e.x = -50;
+            if (e.y < -50) e.y = this.height + 50;
+            if (e.y > this.height + 50) e.y = -50;
+        }
+
+        // 3. Update Photon Sparks
+        for (let i = this.photons.length - 1; i >= 0; i--) {
+            const ph = this.photons[i];
+            ph.x += ph.vx;
+            ph.y += ph.vy + (this.scrollVelocity * 0.5);
+            ph.vx *= 0.92;
+            ph.vy *= 0.92;
+            ph.life -= ph.decay;
+
+            if (ph.life <= 0) {
+                this.photons.splice(i, 1);
+            }
+        }
+    }
+
+    render() {
+        const bg = this.bgCtx;
+        const fg = this.fgCtx;
+
+        bg.clearRect(0, 0, this.width, this.height);
+        fg.clearRect(0, 0, this.width, this.height);
+
+        const scrollWarp = this.scrollVelocity * 1.4;
+        const absScrollWarp = Math.min(Math.abs(scrollWarp), 35);
+
+        // ----------------------------------------------------
+        // Render Background Spacetime Continuum
+        // ----------------------------------------------------
+        for (let i = 0; i < this.particles.length; i++) {
+            const p = this.particles[i];
+            const { r, g, b } = p.color;
+
+            bg.beginPath();
+
+            if (absScrollWarp > 1.5) {
+                // Relativistic Warp Elongation during fast scroll
+                const stretch = Math.max(p.baseRadius, p.baseRadius + absScrollWarp * 0.6);
+                bg.ellipse(p.x, p.y, p.baseRadius, stretch, 0, 0, Math.PI * 2);
+            } else {
+                bg.arc(p.x, p.y, p.baseRadius, 0, Math.PI * 2);
+            }
+
+            bg.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.max(0, p.alpha)})`;
+            bg.fill();
+        }
+
+        // Singularity Accretion Horizon Glow (Subtle celestial aura)
+        const mx = this.mouse.x;
+        const my = this.mouse.y;
+
+        const horizonGlow = bg.createRadialGradient(mx, my, 0, mx, my, this.mouse.radius);
+        horizonGlow.addColorStop(0, 'rgba(198, 240, 228, 0.08)');
+        horizonGlow.addColorStop(0.35, 'rgba(138, 23, 110, 0.04)');
+        horizonGlow.addColorStop(0.7, 'rgba(100, 22, 93, 0.015)');
+        horizonGlow.addColorStop(1, 'rgba(10, 10, 15, 0)');
+
+        bg.fillStyle = horizonGlow;
+        bg.beginPath();
+        bg.arc(mx, my, this.mouse.radius, 0, Math.PI * 2);
+        bg.fill();
+
+        // ----------------------------------------------------
+        // Render Foreground Luminous Floating Embers & Photons
+        // ----------------------------------------------------
+        for (let i = 0; i < this.embers.length; i++) {
+            const e = this.embers[i];
+            const { r, g, b } = e.color;
+
+            const radGrad = fg.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.radius);
+            radGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${e.alpha})`);
+            radGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${e.alpha * 0.4})`);
+            radGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
+            fg.fillStyle = radGrad;
+            fg.beginPath();
+            fg.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+            fg.fill();
+        }
+
+        // Render Photon Trails
+        for (let i = 0; i < this.photons.length; i++) {
+            const ph = this.photons[i];
+            const { r, g, b } = ph.color;
+            const a = ph.life * 0.8;
+
+            fg.beginPath();
+            fg.arc(ph.x, ph.y, ph.radius * ph.life, 0, Math.PI * 2);
+            fg.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+            fg.fill();
+        }
+    }
+}
+
+// Instantiate Spacetime Gravitational Well Engine
+let spacetimeEngine = null;
+window.addEventListener('DOMContentLoaded', () => {
+    spacetimeEngine = new SpacetimeEngine();
+});
+
