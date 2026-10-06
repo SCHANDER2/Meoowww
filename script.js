@@ -5,6 +5,8 @@ gsap.registerPlugin(ScrollTrigger);
 // ==========================================================================
 const lenis = new Lenis({
     autoRaf: false,
+    smoothTouch: false,
+    touchMultiplier: 1.5,
 });
 
 lenis.on('scroll', ScrollTrigger.update);
@@ -213,36 +215,39 @@ if (workGalleryWrapper && workGallery) {
 // ==========================================================================
 // 7. 3D Card Tilt
 // ==========================================================================
-document.querySelectorAll('[data-tilt]').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+const isFinePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+if (isFinePointer) {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -8;
+            const rotateY = ((x - centerX) / centerX) * 8;
+            
+            gsap.to(card, {
+                rotationX: rotateX,
+                rotationY: rotateY,
+                transformPerspective: 800,
+                duration: 0.4,
+                ease: "power2.out"
+            });
+        });
         
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-        
-        gsap.to(card, {
-            rotationX: rotateX,
-            rotationY: rotateY,
-            transformPerspective: 800,
-            duration: 0.5,
-            ease: "power2.out"
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+                rotationX: 0,
+                rotationY: 0,
+                duration: 0.5,
+                ease: "power2.out"
+            });
         });
     });
-    
-    card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-            rotationX: 0,
-            rotationY: 0,
-            duration: 0.5,
-            ease: "power2.out"
-        });
-    });
-});
+}
 
 // ==========================================================================
 // 8. Parallax Depth Layers (Hero Orbs)
@@ -441,14 +446,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
         
-        lenis.scrollTo(targetId, { 
-            duration: 1.2, 
-            offset: -100 
-        });
-        
-        // Close mobile menu if open
-        if (mobileMenu.classList.contains('active')) {
-            mobileMenu.classList.remove('active');
+        closeMobileMenu();
+
+        if (typeof lenis !== 'undefined') {
+            lenis.scrollTo(targetId, { 
+                duration: 1.2, 
+                offset: -80 
+            });
+        } else {
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
         }
     });
 });
@@ -460,29 +467,38 @@ const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
 const mobileMenu = document.querySelector('.mobile-menu');
 const mobileLinks = document.querySelectorAll('.mobile-link');
 
-mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('active');
-    
-    if (mobileMenu.classList.contains('active')) {
-        gsap.to(mobileLinks, {
-            y: 0,
-            opacity: 1,
-            duration: 0.5,
-            stagger: 0.1,
-            ease: "power2.out",
-            delay: 0.2
-        });
-        document.body.style.overflow = 'hidden';
-    } else {
+function closeMobileMenu() {
+    if (mobileMenu && mobileMenu.classList.contains('active')) {
+        mobileMenu.classList.remove('active');
         gsap.to(mobileLinks, {
             y: 20,
             opacity: 0,
-            duration: 0.3
+            duration: 0.25
         });
         document.body.style.overflow = '';
     }
-    playInteractionSound();
-});
+}
+
+if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.contains('active');
+        if (!isOpen) {
+            mobileMenu.classList.add('active');
+            gsap.to(mobileLinks, {
+                y: 0,
+                opacity: 1,
+                duration: 0.4,
+                stagger: 0.08,
+                ease: "power2.out",
+                delay: 0.15
+            });
+            document.body.style.overflow = 'hidden';
+        } else {
+            closeMobileMenu();
+        }
+        playInteractionSound();
+    });
+}
 
 // ==========================================================================
 // 16. Technical Architecture Drawer Modal
@@ -582,13 +598,13 @@ const projectDetails = {
             { value: "100%", label: "Responsive Delivery" }
         ],
         liveUrl: "https://zenlift.in",
-        githubUrl: null
+        githubUrl: "https://github.com/SCHANDER2/Express"
     },
     quantumlearn: {
         number: "05",
         title: "QuantumLearn",
         subtitle: "Interactive Quantum Computing Simulation & Visual Learning Platform",
-        tags: ["Quantum Computing", "Interactive Canvas", "Python State Vectors", "Vercel"],
+        tags: ["Quantum Computing", "TypeScript", "Three.js", "State Vectors"],
         architecture: [
             { step: "01", title: "Circuit Builder Canvas", desc: "Interactive drag-and-drop workspace for quantum logic gates (Hadamard, CNOT, Pauli)." },
             { step: "02", title: "State Vector Engine", desc: "Client-side matrix multiplication calculating superposition & qubit state evolution." },
@@ -606,7 +622,7 @@ const projectDetails = {
             { value: "JCBUST", label: "University Adoption" }
         ],
         liveUrl: "https://qc-lilac-mu.vercel.app",
-        githubUrl: null
+        githubUrl: "https://github.com/SCHANDER2/QC"
     }
 };
 

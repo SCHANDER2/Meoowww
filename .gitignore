@@ -1,1 +1,4 @@
 .vercel
+.agents/
+*.bak
+old_index*
