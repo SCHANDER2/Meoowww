@@ -679,6 +679,14 @@ function openProjectDrawer(projectId) {
         githubBtn.style.display = 'none';
     }
 
+    // Initialize Interactive Playground and Code Snippets for this project
+    if (typeof renderDrawerPlayground === 'function') {
+        renderDrawerPlayground(projectId);
+    }
+    if (typeof renderDrawerCodeInspector === 'function') {
+        renderDrawerCodeInspector(projectId);
+    }
+
     // Show drawer
     projectDrawer.classList.add('active');
     drawerOverlay.classList.add('active');
@@ -748,462 +756,883 @@ if (contactForm) {
 }
 
 // ==========================================================================
-// 18. Interactive Spacetime Gravitational Well & Relativistic Warp Engine
+// 18. Tactile Mechanical Sound Synthesizer
 // ==========================================================================
-class SpacetimeEngine {
-    constructor() {
-        this.bgCanvas = document.getElementById('bg-spacetime-canvas');
-        this.fgCanvas = document.getElementById('fg-spacetime-canvas');
+function playKeyClickSound() {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const now = audioCtx.currentTime;
 
-        if (!this.bgCanvas || !this.fgCanvas) return;
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(850, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.025);
 
-        this.bgCtx = this.bgCanvas.getContext('2d', { alpha: true });
-        this.fgCtx = this.fgCanvas.getContext('2d', { alpha: true });
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
 
-        // Brand Color Palettes with pre-calculated RGB
-        this.palette = [
-            { r: 198, g: 240, b: 228 }, // #C6F0E4 (Bright Mint)
-            { r: 167, g: 232, b: 215 }, // #A7E8D7 (Soft Aqua Mint)
-            { r: 138, g: 23,  b: 110 }, // #8A176E (Vibrant Electric Plum)
-            { r: 100, g: 22,  b: 93  }  // #64165D (Deep Regal Plum)
-        ];
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.025);
+    } catch (e) {}
+}
 
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+// ==========================================================================
+// 19. Raycast / Linear Style Command Palette (Cmd+K / Ctrl+K)
+// ==========================================================================
+const cmdOverlay = document.getElementById('cmdOverlay');
+const commandPalette = document.getElementById('commandPalette');
+const cmdSearchInput = document.getElementById('cmdSearchInput');
+const cmdResultsList = document.getElementById('cmdResultsList');
+const cmdCloseBtn = document.getElementById('cmdCloseBtn');
+const navCmdTrigger = document.getElementById('navCmdTrigger');
 
-        // Physics State
-        this.particles = [];
-        this.embers = [];
-        this.photons = [];
+const commandItems = [
+    // Navigation
+    { id: 'nav-home', title: 'Go to Home', group: 'Navigation', icon: '⌂', action: () => scrollToSection('#home') },
+    { id: 'nav-work', title: 'Go to Selected Work', group: 'Navigation', icon: '⚡', action: () => scrollToSection('#work') },
+    { id: 'nav-about', title: 'Go to About Me', group: 'Navigation', icon: '👤', action: () => scrollToSection('#about') },
+    { id: 'nav-skills', title: 'Go to Skills & Stack', group: 'Navigation', icon: '🛠', action: () => scrollToSection('#skills') },
+    { id: 'nav-exp', title: 'Go to Experience', group: 'Navigation', icon: '⏱', action: () => scrollToSection('#experience') },
+    { id: 'nav-contact', title: 'Go to Contact', group: 'Navigation', icon: '✉', action: () => scrollToSection('#contact') },
 
-        // Singularity / Cursor Coordinates
-        this.mouse = {
-            x: this.width * 0.5,
-            y: this.height * 0.5,
-            targetX: this.width * 0.5,
-            targetY: this.height * 0.5,
-            vx: 0,
-            vy: 0,
-            active: false,
-            radius: 190,
-            innerCore: 22
-        };
+    // Projects
+    { id: 'proj-tejas', title: 'Tejas · AI Learning OS', group: 'Projects', badge: 'Live App', icon: '01', action: () => window.open('https://tejas-web-blond.vercel.app', '_blank') },
+    { id: 'proj-tejas-arch', title: 'Tejas · Architecture Deep-Dive', group: 'Projects', badge: 'Deep-Dive', icon: '01', action: () => openProjectDrawer('tejas') },
+    { id: 'proj-interv', title: 'InterV · AI Interview Platform', group: 'Projects', badge: 'Live App', icon: '02', action: () => window.open('https://interv.in', '_blank') },
+    { id: 'proj-interv-arch', title: 'InterV · Architecture Deep-Dive', group: 'Projects', badge: 'Deep-Dive', icon: '02', action: () => openProjectDrawer('interv') },
+    { id: 'proj-choudhary', title: 'Choudhary Property · Real Estate', group: 'Projects', badge: 'Live App', icon: '03', action: () => window.open('https://real-estate-peach-phi.vercel.app', '_blank') },
+    { id: 'proj-zenlift', title: 'ZenLift.in · Digital Agency', group: 'Projects', badge: 'Live Site', icon: '04', action: () => window.open('https://zenlift.in', '_blank') },
+    { id: 'proj-qc', title: 'QuantumLearn · Quantum Simulation', group: 'Projects', badge: 'Interactive', icon: '05', action: () => openProjectDrawer('quantumlearn') },
 
-        // Autonomous Mobile / Inactive Attractor (Lissajous path)
-        this.autoAttractor = {
-            angle: 0,
-            x: this.width * 0.5,
-            y: this.height * 0.5
-        };
+    // Quick Actions
+    { id: 'act-ai', title: 'Ask Lakshay\'s AI Assistant', group: 'Quick Actions', badge: 'AI Tool', icon: '🤖', action: () => openAiModal('ai') },
+    { id: 'act-cli', title: 'Launch Interactive Hacker CLI Terminal', group: 'Quick Actions', badge: 'CLI', icon: '💻', action: () => openAiModal('cli') },
+    { id: 'act-email', title: 'Copy Email: lakshaybana83@gmail.com', group: 'Quick Actions', badge: 'Clipboard', icon: '📋', action: () => copyToClipboard('lakshaybana83@gmail.com', 'Email copied to clipboard!') },
+    { id: 'act-phone', title: 'Copy Phone: +91 9729864010', group: 'Quick Actions', badge: 'Clipboard', icon: '📞', action: () => copyToClipboard('+91 9729864010', 'Phone number copied to clipboard!') },
+    { id: 'act-resume', title: 'Download Resume (PDF)', group: 'Quick Actions', badge: 'PDF', icon: '📄', action: () => window.open('resume.pdf', '_blank') },
+    { id: 'act-theme', title: 'Toggle Light / Dark Theme', group: 'Quick Actions', badge: 'Theme', icon: '🌗', action: () => { const btn = document.getElementById('theme-toggle'); if (btn) btn.click(); } },
+    { id: 'act-sound', title: 'Toggle Audio & Micro-Haptics', group: 'Quick Actions', badge: 'Sound', icon: '🔊', action: () => { const btn = document.getElementById('sound-toggle'); if (btn) btn.click(); } },
+];
 
-        // Relativistic Scroll Coupling
-        this.scrollVelocity = 0;
-        this.targetScrollVelocity = 0;
+let selectedCmdIndex = 0;
+let filteredCommands = [...commandItems];
 
-        this.isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-        this.isRunning = false;
-        this.rafId = null;
-
-        // Automatic Frame Governor & Performance Budget (Locked 60 FPS Guarantee)
-        this.frameHistory = [];
-        this.throttleTier = 1; // 1 = full 60fps fidelity, 2 = throttled calculation
-        this.lastGovernorCheck = performance.now();
-
-        this.init();
-    }
-
-    init() {
-        this.handleResize();
-        this.initParticles();
-        this.bindEvents();
-        this.start();
-    }
-
-    handleResize() {
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-
-        [this.bgCanvas, this.fgCanvas].forEach(canvas => {
-            canvas.width = Math.floor(this.width * this.dpr);
-            canvas.height = Math.floor(this.height * this.dpr);
-            canvas.style.width = `${this.width}px`;
-            canvas.style.height = `${this.height}px`;
-        });
-
-        this.bgCtx.scale(this.dpr, this.dpr);
-        this.fgCtx.scale(this.dpr, this.dpr);
-    }
-
-    initParticles() {
-        this.particles = [];
-        this.embers = [];
-        this.photons = [];
-
-        // Adaptive particle count for silky 60fps on all devices
-        const bgCount = this.isCoarsePointer || this.width < 768 ? 120 : 260;
-        const fgCount = this.isCoarsePointer || this.width < 768 ? 16 : 36;
-
-        // Background Continuum Particles (Stars / Quantum Grid Nodes)
-        for (let i = 0; i < bgCount; i++) {
-            const col = this.palette[Math.floor(Math.random() * this.palette.length)];
-            this.particles.push({
-                x: Math.random() * this.width,
-                y: Math.random() * this.height,
-                originX: Math.random() * this.width,
-                originY: Math.random() * this.height,
-                vx: (Math.random() - 0.5) * 0.45,
-                vy: (Math.random() - 0.5) * 0.45,
-                baseRadius: Math.random() * 1.6 + 0.6,
-                color: col,
-                alpha: Math.random() * 0.5 + 0.25,
-                baseAlpha: Math.random() * 0.5 + 0.25,
-                pulseSpeed: Math.random() * 0.02 + 0.005,
-                pulseAngle: Math.random() * Math.PI * 2,
-                orbitVelocity: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.02 + 0.015)
-            });
-        }
-
-        // Foreground Soft Luminous Embers
-        for (let i = 0; i < fgCount; i++) {
-            const col = this.palette[Math.floor(Math.random() * 2)]; // Highlight in mint hues
-            this.embers.push({
-                x: Math.random() * this.width,
-                y: Math.random() * this.height,
-                vx: (Math.random() - 0.5) * 0.35,
-                vy: -Math.random() * 0.45 - 0.2, // Slow upward buoyancy
-                radius: Math.random() * 4.5 + 2.5,
-                color: col,
-                alpha: Math.random() * 0.4 + 0.2,
-                baseAlpha: Math.random() * 0.4 + 0.2,
-                phase: Math.random() * Math.PI * 2,
-                phaseSpeed: Math.random() * 0.015 + 0.008
-            });
-        }
-    }
-
-    spawnPhotonSpark(x, y, vx, vy, color) {
-        if (this.photons.length > 40) return; // Pool limit
-        this.photons.push({
-            x: x,
-            y: y,
-            vx: vx + (Math.random() - 0.5) * 2.5,
-            vy: vy + (Math.random() - 0.5) * 2.5,
-            life: 1.0,
-            decay: Math.random() * 0.04 + 0.025,
-            color: color || this.palette[0],
-            radius: Math.random() * 1.8 + 0.8
-        });
-    }
-
-    bindEvents() {
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                this.handleResize();
-                this.initParticles();
-            }, 180);
-        });
-
-        // Pointer move updates Singularity target
-        window.addEventListener('pointermove', (e) => {
-            this.mouse.targetX = e.clientX;
-            this.mouse.targetY = e.clientY;
-            this.mouse.active = true;
-        }, { passive: true });
-
-        // Touch interaction
-        window.addEventListener('touchmove', (e) => {
-            if (e.touches && e.touches[0]) {
-                this.mouse.targetX = e.touches[0].clientX;
-                this.mouse.targetY = e.touches[0].clientY;
-                this.mouse.active = true;
-            }
-        }, { passive: true });
-
-        window.addEventListener('pointerleave', () => {
-            this.mouse.active = false;
-        });
-
-        // Relativistic Lenis Scroll Coupling
+function scrollToSection(selector) {
+    closeCommandPalette();
+    const el = document.querySelector(selector);
+    if (el) {
         if (typeof lenis !== 'undefined') {
-            lenis.on('scroll', (e) => {
-                this.targetScrollVelocity = (e.velocity || 0) * 0.25;
-            });
-        }
-
-        // Energy saving: Pause rendering when document hidden
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                this.stop();
-            } else {
-                this.start();
-            }
-        });
-    }
-
-    start() {
-        if (this.isRunning) return;
-        this.isRunning = true;
-        let lastTime = performance.now();
-
-        const loop = (time) => {
-            if (!this.isRunning) return;
-            const frameMs = time - lastTime;
-            const delta = Math.min(frameMs / 1000, 0.1);
-            lastTime = time;
-
-            // Frame Governor: Monitor performance over rolling sample window
-            this.frameHistory.push(frameMs);
-            if (this.frameHistory.length > 40) this.frameHistory.shift();
-
-            // Run check periodically to preserve buttery 60 FPS
-            if (time - this.lastGovernorCheck > 1000 && this.frameHistory.length >= 20) {
-                this.lastGovernorCheck = time;
-                const avgFrameMs = this.frameHistory.reduce((a, b) => a + b, 0) / this.frameHistory.length;
-                if (avgFrameMs > 32 && this.throttleTier === 1) {
-                    this.throttleTier = 2; // Throttle to maintain responsive UI
-                } else if (avgFrameMs < 18 && this.throttleTier === 2) {
-                    this.throttleTier = 1; // Restore full fidelity
-                }
-            }
-
-            this.update(delta);
-            this.render();
-
-            this.rafId = requestAnimationFrame(loop);
-        };
-        this.rafId = requestAnimationFrame(loop);
-    }
-
-    stop() {
-        this.isRunning = false;
-        if (this.rafId) {
-            cancelAnimationFrame(this.rafId);
-            this.rafId = null;
-        }
-    }
-
-    update(delta) {
-        // Smooth cursor tracking with spring physics
-        const prevMx = this.mouse.x;
-        const prevMy = this.mouse.y;
-
-        if (this.mouse.active) {
-            this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.14;
-            this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.14;
+            lenis.scrollTo(el, { offset: -60 });
         } else {
-            // Autonomous orbit (graceful harmonic motion)
-            this.autoAttractor.angle += 0.012;
-            const cx = this.width * 0.5;
-            const cy = this.height * 0.45;
-            const rx = Math.min(this.width * 0.28, 260);
-            const ry = Math.min(this.height * 0.2, 160);
-
-            const autoX = cx + Math.cos(this.autoAttractor.angle) * rx;
-            const autoY = cy + Math.sin(this.autoAttractor.angle * 1.5) * ry;
-
-            this.mouse.x += (autoX - this.mouse.x) * 0.05;
-            this.mouse.y += (autoY - this.mouse.y) * 0.05;
-        }
-
-        this.mouse.vx = this.mouse.x - prevMx;
-        this.mouse.vy = this.mouse.y - prevMy;
-
-        // Smooth scroll velocity decay
-        this.scrollVelocity += (this.targetScrollVelocity - this.scrollVelocity) * 0.12;
-        this.targetScrollVelocity *= 0.88;
-
-        const mx = this.mouse.x;
-        const my = this.mouse.y;
-        const pullRadius = this.mouse.radius;
-        const coreRadius = this.mouse.innerCore;
-        const scrollWarp = Math.min(Math.abs(this.scrollVelocity) * 1.5, 25);
-
-        // 1. Update Background Continuum Particles
-        for (let i = 0; i < this.particles.length; i++) {
-            const p = this.particles[i];
-
-            // Ambient cosmic twinkle
-            p.pulseAngle += p.pulseSpeed;
-            p.alpha = p.baseAlpha + Math.sin(p.pulseAngle) * 0.15;
-
-            // Gravitational Vector to Singularity
-            const dx = p.x - mx;
-            const dy = p.y - my;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < pullRadius && dist > 1) {
-                const pullFactor = (1 - dist / pullRadius);
-                
-                // Radial attraction toward center
-                const force = pullFactor * pullFactor * 1.6;
-                const fx = (-dx / dist) * force;
-                const fy = (-dy / dist) * force;
-
-                // Tangential orbital accretion swirl
-                const swirlForce = pullFactor * 1.8;
-                const tx = (-dy / dist) * swirlForce;
-                const ty = (dx / dist) * swirlForce;
-
-                p.vx += fx + tx;
-                p.vy += fy + ty;
-
-                // Singularity Event Horizon Event: particle reaches the core
-                if (dist < coreRadius) {
-                    // Emit photon spark into accretion disk
-                    this.spawnPhotonSpark(p.x, p.y, p.vx * 1.8, p.vy * 1.8, p.color);
-
-                    // Re-eject into outer perimeter with fresh momentum
-                    const respawnAngle = Math.random() * Math.PI * 2;
-                    const respawnDist = pullRadius * (0.85 + Math.random() * 0.35);
-                    p.x = mx + Math.cos(respawnAngle) * respawnDist;
-                    p.y = my + Math.sin(respawnAngle) * respawnDist;
-                    p.vx = (Math.random() - 0.5) * 0.8;
-                    p.vy = (Math.random() - 0.5) * 0.8;
-                }
-            }
-
-            // Apply friction damping
-            p.vx *= 0.94;
-            p.vy *= 0.94;
-
-            // Move particle
-            p.x += p.vx;
-            p.y += p.vy + (this.scrollVelocity * 0.35);
-
-            // Screen boundary wrap
-            if (p.x < -30) p.x = this.width + 30;
-            if (p.x > this.width + 30) p.x = -30;
-            if (p.y < -30) p.y = this.height + 30;
-            if (p.y > this.height + 30) p.y = -30;
-        }
-
-        // 2. Update Foreground Luminous Embers
-        for (let i = 0; i < this.embers.length; i++) {
-            const e = this.embers[i];
-            e.phase += e.phaseSpeed;
-            e.x += e.vx + Math.sin(e.phase) * 0.35;
-            e.y += e.vy + (this.scrollVelocity * 0.6);
-
-            // Gentle repulsion / deflection when near singularity
-            const dx = e.x - mx;
-            const dy = e.y - my;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < pullRadius * 0.8 && dist > 1) {
-                const repulse = (1 - dist / (pullRadius * 0.8)) * 1.2;
-                e.vx += (dx / dist) * repulse * 0.3;
-                e.vy += (dy / dist) * repulse * 0.3;
-            }
-
-            e.vx *= 0.96;
-
-            // Screen wrap
-            if (e.x < -50) e.x = this.width + 50;
-            if (e.x > this.width + 50) e.x = -50;
-            if (e.y < -50) e.y = this.height + 50;
-            if (e.y > this.height + 50) e.y = -50;
-        }
-
-        // 3. Update Photon Sparks
-        for (let i = this.photons.length - 1; i >= 0; i--) {
-            const ph = this.photons[i];
-            ph.x += ph.vx;
-            ph.y += ph.vy + (this.scrollVelocity * 0.5);
-            ph.vx *= 0.92;
-            ph.vy *= 0.92;
-            ph.life -= ph.decay;
-
-            if (ph.life <= 0) {
-                this.photons.splice(i, 1);
-            }
-        }
-    }
-
-    render() {
-        const bg = this.bgCtx;
-        const fg = this.fgCtx;
-
-        bg.clearRect(0, 0, this.width, this.height);
-        fg.clearRect(0, 0, this.width, this.height);
-
-        const scrollWarp = this.scrollVelocity * 1.4;
-        const absScrollWarp = Math.min(Math.abs(scrollWarp), 35);
-
-        // ----------------------------------------------------
-        // Render Background Spacetime Continuum
-        // ----------------------------------------------------
-        for (let i = 0; i < this.particles.length; i++) {
-            const p = this.particles[i];
-            const { r, g, b } = p.color;
-
-            bg.beginPath();
-
-            if (absScrollWarp > 1.5) {
-                // Relativistic Warp Elongation during fast scroll
-                const stretch = Math.max(p.baseRadius, p.baseRadius + absScrollWarp * 0.6);
-                bg.ellipse(p.x, p.y, p.baseRadius, stretch, 0, 0, Math.PI * 2);
-            } else {
-                bg.arc(p.x, p.y, p.baseRadius, 0, Math.PI * 2);
-            }
-
-            bg.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.max(0, p.alpha)})`;
-            bg.fill();
-        }
-
-        // Singularity Accretion Horizon Glow (Subtle celestial aura)
-        const mx = this.mouse.x;
-        const my = this.mouse.y;
-
-        const horizonGlow = bg.createRadialGradient(mx, my, 0, mx, my, this.mouse.radius);
-        horizonGlow.addColorStop(0, 'rgba(198, 240, 228, 0.08)');
-        horizonGlow.addColorStop(0.35, 'rgba(138, 23, 110, 0.04)');
-        horizonGlow.addColorStop(0.7, 'rgba(100, 22, 93, 0.015)');
-        horizonGlow.addColorStop(1, 'rgba(10, 10, 15, 0)');
-
-        bg.fillStyle = horizonGlow;
-        bg.beginPath();
-        bg.arc(mx, my, this.mouse.radius, 0, Math.PI * 2);
-        bg.fill();
-
-        // ----------------------------------------------------
-        // Render Foreground Luminous Floating Embers & Photons
-        // ----------------------------------------------------
-        for (let i = 0; i < this.embers.length; i++) {
-            const e = this.embers[i];
-            const { r, g, b } = e.color;
-
-            const radGrad = fg.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.radius);
-            radGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${e.alpha})`);
-            radGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${e.alpha * 0.4})`);
-            radGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
-
-            fg.fillStyle = radGrad;
-            fg.beginPath();
-            fg.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-            fg.fill();
-        }
-
-        // Render Photon Trails
-        for (let i = 0; i < this.photons.length; i++) {
-            const ph = this.photons[i];
-            const { r, g, b } = ph.color;
-            const a = ph.life * 0.8;
-
-            fg.beginPath();
-            fg.arc(ph.x, ph.y, ph.radius * ph.life, 0, Math.PI * 2);
-            fg.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
-            fg.fill();
+            el.scrollIntoView({ behavior: 'smooth' });
         }
     }
 }
 
-// Instantiate Spacetime Gravitational Well Engine
-let spacetimeEngine = null;
-window.addEventListener('DOMContentLoaded', () => {
-    spacetimeEngine = new SpacetimeEngine();
+function copyToClipboard(text, successMsg) {
+    navigator.clipboard.writeText(text).then(() => {
+        showGlobalToast(successMsg);
+    }).catch(() => {
+        showGlobalToast('Copied: ' + text);
+    });
+    closeCommandPalette();
+}
+
+function showGlobalToast(msg) {
+    let toast = document.getElementById('globalToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'globalToast';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '30px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%) translateY(30px)';
+        toast.style.background = '#191428';
+        toast.style.border = '1px solid #C6F0E4';
+        toast.style.color = '#f0f0f5';
+        toast.style.padding = '0.75rem 1.25rem';
+        toast.style.borderRadius = '30px';
+        toast.style.fontSize = '0.88rem';
+        toast.style.fontFamily = 'var(--font-code)';
+        toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.7), 0 0 15px rgba(198,240,228,0.3)';
+        toast.style.zIndex = '11000';
+        toast.style.opacity = '0';
+        toast.style.pointerEvents = 'none';
+        toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2500);
+}
+
+function renderCommandResults() {
+    if (!cmdResultsList) return;
+    cmdResultsList.innerHTML = '';
+
+    if (filteredCommands.length === 0) {
+        cmdResultsList.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-tertiary); font-family: var(--font-code); font-size: 0.85rem;">No commands found. Try "work", "tejas", "email", or "skills".</div>';
+        return;
+    }
+
+    let currentGroup = '';
+    filteredCommands.forEach((cmd, idx) => {
+        if (cmd.group !== currentGroup) {
+            currentGroup = cmd.group;
+            const groupEl = document.createElement('div');
+            groupEl.className = 'cmd-group-label';
+            groupEl.textContent = currentGroup;
+            cmdResultsList.appendChild(groupEl);
+        }
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cmd-item ' + (idx === selectedCmdIndex ? 'selected' : '');
+        itemEl.innerHTML = `
+            <div class="cmd-item-left">
+                <span class="cmd-item-icon">${cmd.icon}</span>
+                <span>${cmd.title}</span>
+            </div>
+            ${cmd.badge ? `<span class="cmd-item-badge">${cmd.badge}</span>` : ''}
+        `;
+
+        itemEl.addEventListener('mouseenter', () => {
+            selectedCmdIndex = idx;
+            updateCmdSelection();
+        });
+
+        itemEl.addEventListener('click', () => {
+            cmd.action();
+            playInteractionSound();
+        });
+
+        cmdResultsList.appendChild(itemEl);
+    });
+
+    scrollSelectedIntoView();
+}
+
+function updateCmdSelection() {
+    const items = cmdResultsList.querySelectorAll('.cmd-item');
+    items.forEach((el, idx) => {
+        el.classList.toggle('selected', idx === selectedCmdIndex);
+    });
+    scrollSelectedIntoView();
+}
+
+function scrollSelectedIntoView() {
+    const selectedEl = cmdResultsList.querySelector('.cmd-item.selected');
+    if (selectedEl) {
+        selectedEl.scrollIntoView({ block: 'nearest' });
+    }
+}
+
+function openCommandPalette() {
+    if (!cmdOverlay) return;
+    cmdOverlay.classList.add('active');
+    cmdOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    filteredCommands = [...commandItems];
+    selectedCmdIndex = 0;
+    renderCommandResults();
+    setTimeout(() => {
+        if (cmdSearchInput) {
+            cmdSearchInput.value = '';
+            cmdSearchInput.focus();
+        }
+    }, 50);
+    playInteractionSound();
+}
+
+function closeCommandPalette() {
+    if (!cmdOverlay) return;
+    cmdOverlay.classList.remove('active');
+    cmdOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+if (navCmdTrigger) {
+    navCmdTrigger.addEventListener('click', openCommandPalette);
+}
+if (cmdCloseBtn) {
+    cmdCloseBtn.addEventListener('click', closeCommandPalette);
+}
+if (cmdOverlay) {
+    cmdOverlay.addEventListener('click', (e) => {
+        if (e.target === cmdOverlay) closeCommandPalette();
+    });
+}
+
+// Global Keyboard Shortcut listener (Cmd+K / Ctrl+K and /)
+window.addEventListener('keydown', (e) => {
+    // Cmd+K or Ctrl+K
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (cmdOverlay && cmdOverlay.classList.contains('active')) {
+            closeCommandPalette();
+        } else {
+            openCommandPalette();
+        }
+        return;
+    }
+
+    // / key when not typing in an input
+    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+    const isInputActive = activeTag === 'input' || activeTag === 'textarea';
+
+    if (e.key === '/' && !isInputActive && !(cmdOverlay && cmdOverlay.classList.contains('active'))) {
+        e.preventDefault();
+        openAiModal('ai');
+        return;
+    }
+
+    // Escape closes palette, drawer, or AI modal
+    if (e.key === 'Escape') {
+        if (cmdOverlay && cmdOverlay.classList.contains('active')) {
+            closeCommandPalette();
+            return;
+        }
+        const aiModal = document.getElementById('aiModal');
+        if (aiModal && aiModal.classList.contains('active')) {
+            closeAiModal();
+            return;
+        }
+    }
+
+    // Palette navigation
+    if (cmdOverlay && cmdOverlay.classList.contains('active')) {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            playKeyClickSound();
+            selectedCmdIndex = (selectedCmdIndex + 1) % Math.max(1, filteredCommands.length);
+            updateCmdSelection();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            playKeyClickSound();
+            selectedCmdIndex = (selectedCmdIndex - 1 + filteredCommands.length) % Math.max(1, filteredCommands.length);
+            updateCmdSelection();
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (filteredCommands[selectedCmdIndex]) {
+                filteredCommands[selectedCmdIndex].action();
+                playInteractionSound();
+            }
+        }
+    }
 });
 
+if (cmdSearchInput) {
+    cmdSearchInput.addEventListener('input', (e) => {
+        playKeyClickSound();
+        const q = e.target.value.toLowerCase().trim();
+        if (!q) {
+            filteredCommands = [...commandItems];
+        } else {
+            filteredCommands = commandItems.filter(item => 
+                item.title.toLowerCase().includes(q) || 
+                item.group.toLowerCase().includes(q) ||
+                (item.badge && item.badge.toLowerCase().includes(q))
+            );
+        }
+        selectedCmdIndex = 0;
+        renderCommandResults();
+    });
+}
+
+// ==========================================================================
+// 20. Floating Dual-Mode AI Assistant & Hacker Terminal CLI Widget
+// ==========================================================================
+const aiDockBtn = document.getElementById('aiDockBtn');
+const aiModal = document.getElementById('aiModal');
+const aiModalOverlay = document.getElementById('aiModalOverlay');
+const tabBtnAi = document.getElementById('tabBtnAi');
+const tabBtnCli = document.getElementById('tabBtnCli');
+const aiChatPane = document.getElementById('aiChatPane');
+const aiCliPane = document.getElementById('aiCliPane');
+const aiModalClose = document.getElementById('aiModalClose');
+const aiModalMinimize = document.getElementById('aiModalMinimize');
+const aiChatForm = document.getElementById('aiChatForm');
+const aiChatInput = document.getElementById('aiChatInput');
+const aiChatMessages = document.getElementById('aiChatMessages');
+const cliForm = document.getElementById('cliForm');
+const cliInput = document.getElementById('cliInput');
+const cliOutput = document.getElementById('cliOutput');
+
+function openAiModal(mode = 'ai') {
+    if (!aiModal) return;
+    aiModal.classList.add('active');
+    if (aiModalOverlay) aiModalOverlay.classList.add('active');
+    switchAiMode(mode);
+    playInteractionSound();
+}
+
+function closeAiModal() {
+    if (!aiModal) return;
+    aiModal.classList.remove('active');
+    if (aiModalOverlay) aiModalOverlay.classList.remove('active');
+}
+
+function switchAiMode(mode) {
+    if (mode === 'ai') {
+        if (tabBtnAi) tabBtnAi.classList.add('active');
+        if (tabBtnCli) tabBtnCli.classList.remove('active');
+        if (aiChatPane) aiChatPane.classList.add('active');
+        if (aiCliPane) aiCliPane.classList.remove('active');
+        setTimeout(() => { if (aiChatInput) aiChatInput.focus(); }, 100);
+    } else {
+        if (tabBtnCli) tabBtnCli.classList.add('active');
+        if (tabBtnAi) tabBtnAi.classList.remove('active');
+        if (aiCliPane) aiCliPane.classList.add('active');
+        if (aiChatPane) aiChatPane.classList.remove('active');
+        setTimeout(() => { if (cliInput) cliInput.focus(); }, 100);
+    }
+}
+
+if (aiDockBtn) aiDockBtn.addEventListener('click', () => openAiModal('ai'));
+if (aiModalClose) aiModalClose.addEventListener('click', closeAiModal);
+if (aiModalMinimize) aiModalMinimize.addEventListener('click', closeAiModal);
+if (aiModalOverlay) aiModalOverlay.addEventListener('click', closeAiModal);
+
+if (tabBtnAi) tabBtnAi.addEventListener('click', () => { switchAiMode('ai'); playInteractionSound(); });
+if (tabBtnCli) tabBtnCli.addEventListener('click', () => { switchAiMode('cli'); playInteractionSound(); });
+
+// Quick prompt chips
+document.querySelectorAll('#aiPromptChips .chip-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const prompt = btn.getAttribute('data-prompt');
+        if (prompt && aiChatInput) {
+            aiChatInput.value = prompt;
+            handleAiChatSubmit(prompt);
+        }
+    });
+});
+
+// AI Knowledge Base Engine
+function getAiResponse(query) {
+    const q = query.toLowerCase();
+
+    if (q.includes('tejas') || q.includes('exam') || q.includes('roadmap') || q.includes('pdf')) {
+        return "Tejas is Lakshay's AI Learning OS. It allows students to upload raw syllabus PDFs or notes, vectorizes them with Supabase pgvector, and orchestrates Gemini 1.5 to compile customized daily study roadmaps, flashcards, and diagnostic mock tests with adaptive spaced repetition.";
+    }
+    if (q.includes('quantum') || q.includes('qc') || q.includes('bloch') || q.includes('gate') || q.includes('simulator')) {
+        return "QuantumLearn is an interactive quantum computing simulation platform. Lakshay engineered client-side complex matrix multiplication in TypeScript and Three.js to simulate quantum logic gates (Hadamard, Pauli-X, CNOT) and 3D Bloch sphere state collapse at a rock-solid 60 FPS without server latency.";
+    }
+    if (q.includes('interv') || q.includes('interview') || q.includes('mock')) {
+        return "InterV is a real-time conversational AI simulator for tech interview prep. Built with React, FastAPI, and WebSockets, it conducts live voice and chat mock interviews, evaluating code structure and communication with instant rubric feedback.";
+    }
+    if (q.includes('choudhary') || q.includes('real estate') || q.includes('property')) {
+        return "Choudhary Property is a hyper-localized real estate platform for rural Rajasthan, designed for low-bandwidth 4G connections. It eliminates middleman fees with a 0% broker commission model and connects buyers directly to verified landowners via WhatsApp deep-links.";
+    }
+    if (q.includes('zenlift') || q.includes('agency')) {
+        return "ZenLift.in is Lakshay's digital growth agency helping small businesses scale online. Lakshay builds sub-second load time web applications with automated CRM webhook integrations, yielding 3x higher lead conversion velocity.";
+    }
+    if (q.includes('stack') || q.includes('tech') || q.includes('language') || q.includes('skills')) {
+        return "Lakshay's core stack covers: Languages: Java, C, Python, SQL, TypeScript, Bash; Frontend: React, Next.js 14, Tailwind, Three.js; Backend: Node.js, FastAPI, Express; AI/ML: PyTorch, RAG, Supabase pgvector, LLM APIs; Tools: Docker, Git, Linux, VS Code.";
+    }
+    if (q.includes('contact') || q.includes('email') || q.includes('hire') || q.includes('reach') || q.includes('phone')) {
+        return "You can reach Lakshay directly at lakshaybana83@gmail.com or by phone at +91 9729864010. You can also connect on LinkedIn (linkedin.com/in/lakshay-bana-9b4191245) or GitHub (github.com/SCHANDER2).";
+    }
+    if (q.includes('who') || q.includes('about') || q.includes('background') || q.includes('college') || q.includes('education')) {
+        return "Lakshay Bana is an engineering student at JCBUST YMCA (Faridabad, India) specializing in AI Systems and modern web architectures. He blends clean UI engineering with complex AI pipelines.";
+    }
+
+    return "Lakshay is a software engineer specializing in AI-driven systems and high-performance web applications. You can explore his flagship projects (Tejas, InterV, QuantumLearn), inspect his skills, or click 'Let's Talk' to start a project together!";
+}
+
+function handleAiChatSubmit(userText) {
+    if (!userText || !aiChatMessages) return;
+
+    // Append user message
+    const userMsgEl = document.createElement('div');
+    userMsgEl.className = 'chat-msg user';
+    userMsgEl.innerHTML = `<div class="msg-bubble"><p>${escapeHtml(userText)}</p></div>`;
+    aiChatMessages.appendChild(userMsgEl);
+
+    if (aiChatInput) aiChatInput.value = '';
+    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+    playKeyClickSound();
+
+    // Show typing placeholder
+    const botMsgEl = document.createElement('div');
+    botMsgEl.className = 'chat-msg bot';
+    botMsgEl.innerHTML = `
+        <div class="bot-avatar">LB</div>
+        <div class="msg-bubble"><p><span class="typing-dots">Thinking...</span></p></div>
+    `;
+    aiChatMessages.appendChild(botMsgEl);
+    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+    // Stream response
+    setTimeout(() => {
+        const fullResponse = getAiResponse(userText);
+        const bubble = botMsgEl.querySelector('.msg-bubble p');
+        bubble.textContent = '';
+        let i = 0;
+        const interval = setInterval(() => {
+            bubble.textContent += fullResponse[i];
+            i++;
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            if (i >= fullResponse.length) {
+                clearInterval(interval);
+            }
+        }, 12);
+    }, 350);
+}
+
+if (aiChatForm) {
+    aiChatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = aiChatInput.value.trim();
+        if (text) handleAiChatSubmit(text);
+    });
+}
+
+// Hacker CLI Terminal Engine
+const cliHistory = [];
+let historyIndex = -1;
+
+function printCliLine(htmlText) {
+    if (!cliOutput) return;
+    const line = document.createElement('div');
+    line.className = 'cli-line';
+    line.innerHTML = htmlText;
+    cliOutput.appendChild(line);
+    cliOutput.scrollTop = cliOutput.scrollHeight;
+}
+
+function handleCliCommand(cmdStr) {
+    const raw = cmdStr.trim();
+    if (!raw) return;
+
+    cliHistory.push(raw);
+    historyIndex = cliHistory.length;
+
+    printCliLine(`<span class="cli-prompt">lakshay@portfolio:~$</span> ${escapeHtml(raw)}`);
+
+    const parts = raw.split(' ');
+    const cmd = parts[0].toLowerCase();
+    const arg = parts.slice(1).join(' ').toLowerCase();
+
+    switch (cmd) {
+        case 'help':
+            printCliLine(`Available commands:`);
+            printCliLine(`  <span class="term-accent">projects</span>       List all flagship engineering projects`);
+            printCliLine(`  <span class="term-accent">project &lt;name&gt;</span>  Open project details (tejas, interv, qc, etc.)`);
+            printCliLine(`  <span class="term-accent">skills</span>         Display tech stack & engineering tools`);
+            printCliLine(`  <span class="term-accent">whoami</span>         Print Lakshay's bio & background`);
+            printCliLine(`  <span class="term-accent">contact</span>        Show direct email, phone, and links`);
+            printCliLine(`  <span class="term-accent">cat resume</span>     View executive resume summary`);
+            printCliLine(`  <span class="term-accent">palette</span>        Open the Cmd+K Command Palette`);
+            printCliLine(`  <span class="term-accent">theme</span>          Toggle Light / Dark mode`);
+            printCliLine(`  <span class="term-accent">audio</span>          Toggle micro-haptic sound effects`);
+            printCliLine(`  <span class="term-accent">clear</span>          Clear the terminal screen`);
+            break;
+
+        case 'projects':
+            printCliLine(`Lakshay Bana's Projects:`);
+            printCliLine(`  [01] <span class="term-accent">tejas</span>         Tejas · AI Learning OS (<a href="https://tejas-web-blond.vercel.app" target="_blank" class="term-link">tejas-web-blond.vercel.app</a>)`);
+            printCliLine(`  [02] <span class="term-accent">interv</span>        InterV · AI Interview Prep (<a href="https://interv.in" target="_blank" class="term-link">interv.in</a>)`);
+            printCliLine(`  [03] <span class="term-accent">choudhary</span>     Choudhary Property (<a href="https://real-estate-peach-phi.vercel.app" target="_blank" class="term-link">real-estate-peach-phi.vercel.app</a>)`);
+            printCliLine(`  [04] <span class="term-accent">zenlift</span>       ZenLift Growth Agency (<a href="https://zenlift.in" target="_blank" class="term-link">zenlift.in</a>)`);
+            printCliLine(`  [05] <span class="term-accent">quantumlearn</span>  QuantumLearn Statevector Sim (<a href="https://qc-lilac-mu.vercel.app" target="_blank" class="term-link">qc-lilac-mu.vercel.app</a>)`);
+            printCliLine(`Type <span class="term-accent">project tejas</span> or <span class="term-accent">project qc</span> to inspect.`);
+            break;
+
+        case 'project':
+            if (!arg) {
+                printCliLine(`<span class="term-warn">Usage: project &lt;tejas | interv | choudhary | zenlift | qc&gt;</span>`);
+            } else if (arg.includes('tejas')) {
+                openProjectDrawer('tejas');
+                printCliLine(`Opening Tejas architecture deep-dive...`);
+            } else if (arg.includes('interv')) {
+                openProjectDrawer('interv');
+                printCliLine(`Opening InterV architecture deep-dive...`);
+            } else if (arg.includes('choudhary')) {
+                openProjectDrawer('choudhary');
+                printCliLine(`Opening Choudhary Property architecture deep-dive...`);
+            } else if (arg.includes('zenlift')) {
+                openProjectDrawer('zenlift');
+                printCliLine(`Opening ZenLift architecture deep-dive...`);
+            } else if (arg.includes('qc') || arg.includes('quantum')) {
+                openProjectDrawer('quantumlearn');
+                printCliLine(`Opening QuantumLearn architecture deep-dive & simulator...`);
+            } else {
+                printCliLine(`<span class="term-error">Unknown project "${arg}". Type "projects" to list.</span>`);
+            }
+            break;
+
+        case 'skills':
+            printCliLine(`Languages:   Java, C, Python, SQL, TypeScript, Bash`);
+            printCliLine(`Frontend:    React, Next.js 14, Tailwind CSS, Three.js`);
+            printCliLine(`Backend:     Node.js, Express, FastAPI, WebSockets`);
+            printCliLine(`AI / ML:     PyTorch, RAG Pipelines, Gemini 1.5, Vector DBs`);
+            printCliLine(`Databases:   Supabase (pgvector), MySQL, SQLite, MongoDB`);
+            printCliLine(`DevOps:      Docker, Git, GitHub Actions, Linux`);
+            break;
+
+        case 'whoami':
+            printCliLine(`<span class="term-accent">Lakshay Bana</span>`);
+            printCliLine(`Location:    Faridabad, Haryana, India`);
+            printCliLine(`Education:   JCBUST YMCA, Faridabad (B.Tech)`);
+            printCliLine(`Focus:       AI Systems, Vector RAG Workspaces, Modern Web UI`);
+            printCliLine(`Status:      Available for opportunities`);
+            break;
+
+        case 'contact':
+            printCliLine(`Email:       <a href="mailto:lakshaybana83@gmail.com" class="term-link">lakshaybana83@gmail.com</a>`);
+            printCliLine(`Phone:       +91 9729864010`);
+            printCliLine(`GitHub:      <a href="https://github.com/SCHANDER2" target="_blank" class="term-link">github.com/SCHANDER2</a>`);
+            printCliLine(`LinkedIn:    <a href="https://linkedin.com/in/lakshay-bana-9b4191245" target="_blank" class="term-link">linkedin.com/in/lakshay-bana-9b4191245</a>`);
+            break;
+
+        case 'cat':
+            if (arg.includes('resume')) {
+                printCliLine(`================ EXECUTIVE SUMMARY ================`);
+                printCliLine(`Name: Lakshay Bana`);
+                printCliLine(`Specialization: Fullstack AI & High-Performance Web`);
+                printCliLine(`Key Systems: Tejas (AI Learning OS), InterV (Interview Sim), QuantumLearn (Bloch Sphere)`);
+                printCliLine(`Download: <a href="resume.pdf" download class="term-link">Download Full PDF Resume &rarr;</a>`);
+            } else {
+                printCliLine(`cat: ${arg || 'file'}: No such file or directory. Try: <span class="term-accent">cat resume</span>`);
+            }
+            break;
+
+        case 'palette':
+            closeAiModal();
+            openCommandPalette();
+            break;
+
+        case 'theme':
+            const tbtn = document.getElementById('theme-toggle');
+            if (tbtn) tbtn.click();
+            printCliLine(`Toggled display theme.`);
+            break;
+
+        case 'audio':
+            const sbtn = document.getElementById('sound-toggle');
+            if (sbtn) sbtn.click();
+            printCliLine(`Audio feedback toggled.`);
+            break;
+
+        case 'clear':
+            if (cliOutput) cliOutput.innerHTML = '';
+            break;
+
+        default:
+            printCliLine(`<span class="term-error">Command not found: "${cmd}". Type <span class="term-accent">help</span> for a list of commands.</span>`);
+            break;
+    }
+
+    playInteractionSound();
+}
+
+if (cliForm) {
+    cliForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (cliInput) {
+            handleCliCommand(cliInput.value);
+            cliInput.value = '';
+        }
+    });
+}
+
+// ==========================================================================
+// 21. Interactive Drawer Playgrounds & Code Inspector
+// ==========================================================================
+
+// Quantum Gate State Simulator State: |ψ⟩ = α|0⟩ + β|1⟩
+let qubitAlpha = 1.0; // amplitude of |0>
+let qubitBeta = 0.0;  // amplitude of |1>
+
+function renderDrawerPlayground(projectId) {
+    const container = document.getElementById('drawerPlaygroundContainer');
+    if (!container) return;
+
+    if (projectId === 'quantumlearn') {
+        qubitAlpha = 1.0;
+        qubitBeta = 0.0;
+        container.innerHTML = `
+            <div class="quantum-playground">
+                <div class="quantum-header">
+                    <div>
+                        <span style="font-weight: 700; color: #f0f0f5; font-size: 0.95rem;">Qubit State Vector Simulator</span>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Apply quantum logic gates to simulate superposition & probability amplitudes.</p>
+                    </div>
+                    <div class="quantum-state-readout" id="quantumStateReadout">|ψ⟩ = 1.00|0⟩ + 0.00|1⟩</div>
+                </div>
+
+                <div class="quantum-gates-row">
+                    <button class="q-gate-btn" data-gate="H" title="Hadamard: Creates equal superposition">H (Hadamard)</button>
+                    <button class="q-gate-btn" data-gate="X" title="Pauli-X: Bit-flip NOT gate">X (NOT)</button>
+                    <button class="q-gate-btn" data-gate="Z" title="Pauli-Z: Phase flip">Z (Phase)</button>
+                    <button class="q-gate-btn" data-gate="RESET" title="Reset to ground state">↺ Reset</button>
+                </div>
+
+                <div class="quantum-prob-bars">
+                    <div class="prob-bar-row">
+                        <span style="width: 40px; color: #C6F0E4;">|0⟩</span>
+                        <div class="prob-track"><div class="prob-fill" id="probZeroFill" style="width: 100%;"></div></div>
+                        <span id="probZeroLabel" style="width: 45px; text-align: right; color: #C6F0E4;">100%</span>
+                    </div>
+                    <div class="prob-bar-row">
+                        <span style="width: 40px; color: #A7E8D7;">|1⟩</span>
+                        <div class="prob-track"><div class="prob-fill" id="probOneFill" style="width: 0%;"></div></div>
+                        <span id="probOneLabel" style="width: 45px; text-align: right; color: #A7E8D7;">0%</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.querySelectorAll('.q-gate-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const gate = btn.getAttribute('data-gate');
+                applyQuantumGate(gate);
+                playInteractionSound();
+            });
+        });
+
+    } else if (projectId === 'tejas') {
+        container.innerHTML = `
+            <div class="quantum-playground">
+                <div class="quantum-header">
+                    <div>
+                        <span style="font-weight: 700; color: #f0f0f5; font-size: 0.95rem;">AI Syllabus Chunking & Roadmap Compiler</span>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Interactive test of the PDF vectorization -> Gemini 1.5 daily targets compiler.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                    <select id="tejasSubjectSelect" style="background: #191428; border: 1px solid rgba(198,240,228,0.3); color: #C6F0E4; padding: 0.4rem 0.75rem; border-radius: 8px; font-family: var(--font-code); font-size: 0.82rem; outline: none;">
+                        <option value="cs">Computer Science (Data Structures & Algos)</option>
+                        <option value="ai">Artificial Intelligence & Deep Learning</option>
+                        <option value="os">Operating Systems & Kernels</option>
+                    </select>
+                    <button id="btnCompileTejas" class="q-gate-btn" style="background: linear-gradient(135deg, #8A176E, #64165D);">⚡ Run AI Compilation</button>
+                </div>
+                <div id="tejasCompilerOutput" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(138,23,110,0.3); border-radius: 8px; padding: 0.85rem; font-family: var(--font-code); font-size: 0.8rem; line-height: 1.5; color: #A7E8D7;">
+                    Click "Run AI Compilation" to simulate PDF vector embedding and syllabus roadmap generation.
+                </div>
+            </div>
+        `;
+
+        const btn = document.getElementById('btnCompileTejas');
+        const select = document.getElementById('tejasSubjectSelect');
+        const output = document.getElementById('tejasCompilerOutput');
+
+        if (btn) {
+            btn.addEventListener('click', () => {
+                output.innerHTML = '<span style="color: #ffbd2e;">[1/3] Chunking syllabus PDF & extracting semantic topics...</span>';
+                playKeyClickSound();
+                setTimeout(() => {
+                    output.innerHTML = '<span style="color: #A7E8D7;">[2/3] Querying Supabase pgvector cosine similarity...</span>';
+                    setTimeout(() => {
+                        output.innerHTML = `
+                            <span style="color: #27c93f;">✔ [3/3] Gemini 1.5 Context Engine Compiled 7-Day Target:</span><br>
+                            &bull; <strong>Day 1-2:</strong> Foundation Concepts & Vector Representations<br>
+                            &bull; <strong>Day 3-4:</strong> Algorithmic Complexity & Edge Cases<br>
+                            &bull; <strong>Day 5-6:</strong> Diagnostic Mock Exam (25 MCQs generated)<br>
+                            &bull; <strong>Day 7:</strong> Spaced-Repetition Knowledge Gap Review
+                        `;
+                        playInteractionSound();
+                    }, 400);
+                }, 300);
+            });
+        }
+
+    } else {
+        container.innerHTML = `
+            <div class="quantum-playground">
+                <span style="font-weight: 700; color: #f0f0f5; font-size: 0.95rem;">System Health & Reliability Metrics</span>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.5rem;">Client edge latency, uptime, and deployment status across global CDN edges.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.5rem; font-family: var(--font-code); font-size: 0.8rem;">
+                    <div style="background: rgba(0,0,0,0.4); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(198,240,228,0.2);">
+                        <div style="color: var(--text-tertiary); font-size: 0.7rem;">EDGE STATUS</div>
+                        <div style="color: #27c93f; font-weight: bold;">● Operational</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.4); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(198,240,228,0.2);">
+                        <div style="color: var(--text-tertiary); font-size: 0.7rem;">GLOBAL TTFB</div>
+                        <div style="color: #C6F0E4; font-weight: bold;">&lt; 350ms</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.4); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(198,240,228,0.2);">
+                        <div style="color: var(--text-tertiary); font-size: 0.7rem;">CDN CACHE</div>
+                        <div style="color: #A7E8D7; font-weight: bold;">99.4% Hit</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function applyQuantumGate(gate) {
+    if (gate === 'RESET') {
+        qubitAlpha = 1.0;
+        qubitBeta = 0.0;
+    } else if (gate === 'X') {
+        const temp = qubitAlpha;
+        qubitAlpha = qubitBeta;
+        qubitBeta = temp;
+    } else if (gate === 'H') {
+        const invSqrt2 = 1 / Math.SQRT2;
+        const newAlpha = (qubitAlpha + qubitBeta) * invSqrt2;
+        const newBeta = (qubitAlpha - qubitBeta) * invSqrt2;
+        qubitAlpha = newAlpha;
+        qubitBeta = newBeta;
+    } else if (gate === 'Z') {
+        qubitBeta = -qubitBeta;
+    }
+
+    const prob0 = Math.min(100, Math.max(0, Math.round(qubitAlpha * qubitAlpha * 100)));
+    const prob1 = 100 - prob0;
+
+    const readout = document.getElementById('quantumStateReadout');
+    const fill0 = document.getElementById('probZeroFill');
+    const fill1 = document.getElementById('probOneFill');
+    const label0 = document.getElementById('probZeroLabel');
+    const label1 = document.getElementById('probOneLabel');
+
+    if (readout) {
+        readout.textContent = `|ψ⟩ = ${qubitAlpha.toFixed(2)}|0⟩ ${qubitBeta >= 0 ? '+' : '-'} ${Math.abs(qubitBeta).toFixed(2)}|1⟩`;
+    }
+    if (fill0) fill0.style.width = `${prob0}%`;
+    if (fill1) fill1.style.width = `${prob1}%`;
+    if (label0) label0.textContent = `${prob0}%`;
+    if (label1) label1.textContent = `${prob1}%`;
+}
+
+// Architecture Code Snippets
+const projectCodeSnippets = {
+    tejas: [
+        {
+            lang: 'TypeScript (Next.js)',
+            code: `// Tejas: Supabase pgvector Embedding & Context Retrieval
+import { createClient } from '@supabase/supabase-js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+export async function matchSyllabusChunks(embedding: number[], matchCount = 5) {
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+  const { data, error } = await supabase.rpc('match_syllabus_sections', {
+    query_embedding: embedding,
+    match_threshold: 0.78,
+    match_count: matchCount,
+  });
+  if (error) throw new Error(error.message);
+  return data;
+}`
+        },
+        {
+            lang: 'Python (FastAPI)',
+            code: `# Tejas: Adaptive Mock Generator Pipeline
+from fastapi import FastAPI, BackgroundTasks
+import google.generativeai as genai
+
+app = FastAPI()
+
+@app.post("/api/generate-roadmap")
+async def generate_daily_roadmap(syllabus_id: str, days_remaining: int):
+    model = genai.GenerativeModel("gemini-1.5-pro-latest")
+    prompt = f"Deconstruct syllabus {syllabus_id} into {days_remaining} calibrated milestones..."
+    response = await model.generate_content_async(prompt)
+    return {"roadmap": response.text, "status": "compiled"}`
+        }
+    ],
+    quantumlearn: [
+        {
+            lang: 'TypeScript (Sim Engine)',
+            code: `// QuantumLearn: Complex Number Linear Algebra Gate Simulator
+export class QuantumRegister {
+  private state: [number, number][]; // [real, imag] amplitude pairs
+
+  constructor(public numQubits: number) {
+    this.state = Array.from({ length: 1 << numQubits }, (_, i) => [i === 0 ? 1 : 0, 0]);
+  }
+
+  public applyHadamard(targetQubit: number): void {
+    const invSqrt2 = 1 / Math.SQRT2;
+    // Tensor product matrix multiplication across state vector
+    for (let i = 0; i < this.state.length; i += (1 << (targetQubit + 1))) {
+      for (let j = 0; j < (1 << targetQubit); j++) {
+        const idx0 = i + j;
+        const idx1 = idx0 + (1 << targetQubit);
+        const [r0, i0] = this.state[idx0];
+        const [r1, i1] = this.state[idx1];
+        this.state[idx0] = [(r0 + r1) * invSqrt2, (i0 + i1) * invSqrt2];
+        this.state[idx1] = [(r0 - r1) * invSqrt2, (i0 - i1) * invSqrt2];
+      }
+    }
+  }
+}`
+        }
+    ],
+    interv: [
+        {
+            lang: 'Python (WebSockets)',
+            code: `# InterV: Real-time Interview Speech & Code Feedback Loop
+from fastapi import WebSocket, WebSocketDisconnect
+
+@app.websocket("/ws/interview/{session_id}")
+async def interview_stream_endpoint(websocket: WebSocket, session_id: str):
+    await websocket.accept()
+    try:
+        while True:
+            audio_frame = await websocket.receive_bytes()
+            transcription = await speech_to_text(audio_frame)
+            evaluation = evaluate_response_rubric(transcription)
+            await websocket.send_json({"feedback": evaluation})
+    except WebSocketDisconnect:
+        pass`
+        }
+    ]
+};
+
+function renderDrawerCodeInspector(projectId) {
+    const tabsContainer = document.getElementById('drawerCodeTabs');
+    const codeBlock = document.getElementById('drawerCodeContent');
+    const btnCopy = document.getElementById('btnCopyCode');
+    const copyText = document.getElementById('copyCodeText');
+
+    if (!tabsContainer || !codeBlock) return;
+
+    const snippets = projectCodeSnippets[projectId] || [
+        {
+            lang: 'TypeScript / React',
+            code: `// Clean Modular Component Pattern\nexport default function SystemModule() {\n  return <div className="border border-plum/30 rounded-xl p-4">Clean Architecture</div>;\n}`
+        }
+    ];
+
+    tabsContainer.innerHTML = '';
+    snippets.forEach((s, idx) => {
+        const tabBtn = document.createElement('button');
+        tabBtn.className = 'code-tab-btn ' + (idx === 0 ? 'active' : '');
+        tabBtn.textContent = s.lang;
+        tabBtn.addEventListener('click', () => {
+            tabsContainer.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+            tabBtn.classList.add('active');
+            codeBlock.textContent = s.code;
+            playKeyClickSound();
+        });
+        tabsContainer.appendChild(tabBtn);
+    });
+
+    codeBlock.textContent = snippets[0].code;
+
+    if (btnCopy) {
+        btnCopy.onclick = () => {
+            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+                if (copyText) copyText.textContent = 'Copied!';
+                setTimeout(() => { if (copyText) copyText.textContent = 'Copy'; }, 2000);
+            });
+            playInteractionSound();
+        };
+    }
+}
+
+function escapeHtml(text) {
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}

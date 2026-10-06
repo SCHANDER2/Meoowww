@@ -59,8 +59,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Background Spacetime Canvas -->
-    <canvas id="bg-spacetime-canvas" class="spacetime-canvas bg-canvas" aria-hidden="true"></canvas>
+
 
     <!-- Magnetic Cursor -->
     <div class="cursor-dot"></div>
@@ -86,6 +85,11 @@
             </div>
 
             <div class="nav-actions">
+                <button class="nav-cmd-trigger" id="navCmdTrigger" aria-label="Open Command Palette" title="Press ⌘K or Ctrl+K to search" data-magnetic>
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <span>Search</span>
+                    <kbd>⌘K</kbd>
+                </button>
                 <button id="sound-toggle" class="icon-btn" aria-label="Toggle Sound" data-magnetic>
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                 </button>
@@ -546,8 +550,6 @@
                 </div>
             </div>
         </section>
-        <!-- Foreground Spatial Depth Canvas -->
-        <canvas id="fg-spacetime-canvas" class="spacetime-canvas fg-canvas" aria-hidden="true"></canvas>
     </main>
 
     <!-- Technical Architecture Drawer Modal -->
@@ -595,6 +597,33 @@
                 <div class="metrics-grid" id="drawerMetricsGrid"></div>
             </div>
 
+            <!-- Interactive System Playground -->
+            <div class="drawer-section" id="drawerPlaygroundSection">
+                <h3 class="drawer-section-title">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    Interactive System Playground
+                </h3>
+                <div id="drawerPlaygroundContainer"></div>
+            </div>
+
+            <!-- Architecture Production Code Snippet -->
+            <div class="drawer-section" id="drawerCodeSection">
+                <div class="drawer-section-header-flex">
+                    <h3 class="drawer-section-title">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                        Production Architecture Code
+                    </h3>
+                    <div class="code-tabs" id="drawerCodeTabs"></div>
+                </div>
+                <div class="code-inspector-container">
+                    <pre class="code-inspector-pre"><code id="drawerCodeContent" class="code-inspector-content"></code></pre>
+                    <button class="btn-copy-code" id="btnCopyCode" title="Copy code snippet">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span id="copyCodeText">Copy</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Action Links -->
             <div class="drawer-actions" id="drawerActions">
                 <a href="#" target="_blank" class="btn-primary" id="drawerLiveBtn" data-magnetic>Launch Live Site &rarr;</a>
@@ -606,6 +635,98 @@
     <button id="back-to-top" class="icon-btn back-to-top" aria-label="Back to top" data-magnetic>
         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="18 15 12 9 6 15"></polyline></svg>
     </button>
+
+    <!-- Raycast / Linear Style Command Palette Modal -->
+    <div class="cmd-overlay" id="cmdOverlay" aria-hidden="true">
+        <div class="cmd-palette" id="commandPalette" role="dialog" aria-modal="true" aria-label="Command Palette">
+            <div class="cmd-header">
+                <svg class="cmd-search-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="cmdSearchInput" class="cmd-input" placeholder="Type a command or search (e.g. 'work', 'tejas', 'copy email', 'resume')..." autocomplete="off" spellcheck="false">
+                <button class="cmd-esc-badge" id="cmdCloseBtn" aria-label="Close command palette">ESC</button>
+            </div>
+            <div class="cmd-results" id="cmdResultsList"></div>
+            <div class="cmd-footer">
+                <div class="cmd-footer-keys">
+                    <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> Navigate</span>
+                    <span><kbd>&crarr;</kbd> Select</span>
+                    <span><kbd>ESC</kbd> Close</span>
+                </div>
+                <span class="cmd-footer-brand">Lakshay Bana &middot; OS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Dual-Mode AI Assistant & Hacker Terminal CLI Widget -->
+    <div class="ai-widget-dock" id="aiWidgetDock">
+        <button class="ai-dock-btn" id="aiDockBtn" aria-label="Open AI Assistant and Terminal" data-magnetic>
+            <span class="ai-dock-radar"></span>
+            <span class="ai-dock-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM4.93 4.93a2 2 0 0 1 2.83 0l1.41 1.41a2 2 0 0 1-2.83 2.83L4.93 7.76a2 2 0 0 1 0-2.83zM2 12a2 2 0 0 1 2-2h2a2 2 0 0 1 0 4H4a2 2 0 0 1-2-2zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path><path d="M18 12h2a2 2 0 1 1 0 4h-2M16.24 7.76l1.41-1.41a2 2 0 0 1 2.83 2.83l-1.41 1.41"></path></svg>
+            </span>
+            <span class="ai-dock-label">Ask AI / Terminal <kbd>/</kbd></span>
+        </button>
+    </div>
+
+    <div class="ai-modal-overlay" id="aiModalOverlay"></div>
+    <div class="ai-modal" id="aiModal" role="dialog" aria-modal="true" aria-label="AI Assistant and Terminal" aria-hidden="true">
+        <div class="ai-modal-header">
+            <div class="ai-tab-switcher">
+                <button class="ai-tab-btn active" id="tabBtnAi" data-mode="ai">
+                    <span class="tab-icon">&#129302;</span> AI Assistant
+                </button>
+                <button class="ai-tab-btn" id="tabBtnCli" data-mode="cli">
+                    <span class="tab-icon">&#128187;</span> Terminal CLI
+                </button>
+            </div>
+            <div class="ai-modal-controls">
+                <button class="ai-control-btn" id="aiModalMinimize" aria-label="Minimize" title="Minimize">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+                <button class="ai-control-btn" id="aiModalClose" aria-label="Close" title="Close">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- AI Conversational View -->
+        <div class="ai-view-pane ai-chat-pane active" id="aiChatPane">
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="chat-msg bot">
+                    <div class="bot-avatar">LB</div>
+                    <div class="msg-bubble">
+                        <p>Hey! I'm Lakshay's AI Assistant. Ask me anything about his systems (Tejas, InterV, QuantumLearn), his tech stack, or engineering background.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="ai-prompt-chips" id="aiPromptChips">
+                <button class="chip-btn" data-prompt="What makes Tejas AI Learning OS unique?">Tejas Architecture</button>
+                <button class="chip-btn" data-prompt="How does the QuantumLearn simulator work?">Quantum Simulator</button>
+                <button class="chip-btn" data-prompt="What is Lakshay's core tech stack?">Core Tech Stack</button>
+                <button class="chip-btn" data-prompt="How can I get in touch with Lakshay?">Contact Info</button>
+            </div>
+            <form class="ai-chat-input-bar" id="aiChatForm">
+                <input type="text" id="aiChatInput" class="ai-chat-input" placeholder="Ask a question about Lakshay's work..." autocomplete="off">
+                <button type="submit" class="ai-send-btn" id="aiSendBtn" aria-label="Send">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- Terminal CLI View -->
+        <div class="ai-view-pane ai-cli-pane" id="aiCliPane">
+            <div class="cli-terminal" id="cliTerminal">
+                <div class="cli-output" id="cliOutput">
+                    <div class="cli-line welcome">Lakshay Bana Interactive Terminal [Version 2.4.0]</div>
+                    <div class="cli-line welcome">Type <span class="term-accent">help</span> for a list of available commands.</div>
+                    <div class="cli-line divider">&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;&dash;</div>
+                </div>
+                <form class="cli-input-line" id="cliForm">
+                    <span class="cli-prompt">lakshay@portfolio:~$</span>
+                    <input type="text" id="cliInput" class="cli-input" autocomplete="off" spellcheck="false">
+                </form>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="container footer-container">
